@@ -499,7 +499,7 @@ Game = {
 
     initialize: function(id, game, cfg) {
       this.cfg          = Object.extend(game.Defaults || {}, cfg || {}); // use game defaults (if any) and extend with custom cfg (if any)
-      this.fps          = this.cfg.fps || 60;
+      this.fps          = this.cfg.fps || 100000;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = $(id);
       this.bounds       = this.canvas.getBoundingClientRect();
@@ -531,7 +531,7 @@ Game = {
     },
 
     loop: function() {
-      this._start  = Game.timestamp(); this.update((this._start - this.lastFrame)/1000.0); // send dt as seconds
+      this._start  = Game.timestamp(); this.update(.005); // send dt as seconds
       this._middle = Game.timestamp(); this.draw();
       this._end    = Game.timestamp();
       this.updateStats(this._middle - this._start, this._end - this._middle);

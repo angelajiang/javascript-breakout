@@ -263,7 +263,35 @@ Breakout.Levels = [
       "                 FfFfFfFfF    ",
       "                   FfFfF      "
     ]
-  }
+  },
+  { colors: Breakout.Colors.pastel,
+    bricks: [
+      "yyyyyYYYYYyyyyyYYYYYyyyyyYYYYY",
+      "pppppPPPPPpppppPPPPPpppppPPPPP",
+      "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB",
+      "gggggGGGGGgggggGGGGGgggggGGGGG",
+      "oooooOOOOOoooooOOOOOoooooOOOOO",
+      "yyyyyYYYYYyyyyyYYYYYyyyyyYYYYY",
+      "pppppPPPPPpppppPPPPPpppppPPPPP",
+      "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB",
+      "gggggGGGGGgggggGGGGGgggggGGGGG",
+      "oooooOOOOOoooooOOOOOoooooOOOOO",
+      "yyyyyYYYYYyyyyyYYYYYyyyyyYYYYY",
+      "pppppPPPPPpppppPPPPPpppppPPPPP",
+      "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB",
+      "gggggGGGGGgggggGGGGGgggggGGGGG",
+      "oooooOOOOOoooooOOOOOoooooOOOOO",
+      "yyyyyYYYYYyyyyyYYYYYyyyyyYYYYY",
+      "pppppPPPPPpppppPPPPPpppppPPPPP",
+      "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB",
+      "gggggGGGGGgggggGGGGGgggggGGGGG",
+      "oooooOOOOOoooooOOOOOoooooOOOOO",
+      "yyyyyYYYYYyyyyyYYYYYyyyyyYYYYY",
+      "pppppPPPPPpppppPPPPPpppppPPPPP",
+      "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB"
+    ]
+  },
+
 
 
 ];

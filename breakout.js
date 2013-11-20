@@ -6,13 +6,13 @@ Breakout = {
 
   Defaults: {
 
-    fps: 60,
+    fps: 100000,
     stats: false,
 
     score: {
       lives: {
-        initial: 3,
-        max: 5
+        initial: 1,
+        max: 1
       }
     },
 
@@ -23,7 +23,7 @@ Breakout = {
 
     ball: {
       radius:  0.3,
-      speed:   15,
+      speed:   100,
       labels: {
         3: { text: 'ready...', fill: '#D82800', stroke: 'black', font: 'bold 28pt arial' },
         2: { text: 'set..',    fill: '#FC9838', stroke: 'black', font: 'bold 28pt arial' },
@@ -34,7 +34,7 @@ Breakout = {
     paddle: {
       width:  6,
       height: 1,
-      speed:  20
+      speed:  300
     },
 
     color: {
@@ -93,6 +93,7 @@ Breakout = {
     this.paddle  = Object.construct(Breakout.Paddle, this, cfg.paddle);
     this.ball    = Object.construct(Breakout.Ball,   this, cfg.ball);
     this.score   = Object.construct(Breakout.Score,  this, cfg.score);
+    this.bot = Object.construct(Breakout.bot, this, cfg.bot);
     Game.loadSounds({sounds: cfg.sounds});
   },
 
@@ -117,9 +118,11 @@ Breakout = {
 
   update: function(dt) {
     this.court.update(dt);
+    this.bot.update(dt);
     this.paddle.update(dt);
     this.ball.update(dt);
     this.score.update(dt);
+
   },
 
   draw: function(ctx) {
@@ -369,6 +372,7 @@ Breakout = {
 
       this.wall = {}
       this.wall.size  = this.chunk;
+      console.log("console size" + this.chunk);
       this.wall.top   = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.width + this.wall.size*2, h: this.wall.size*2               });
       this.wall.left  = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
       this.wall.right = Game.Math.bound({x: this.right,                 y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
@@ -452,6 +456,7 @@ Breakout = {
     reset: function(options) {
       this.radius   = this.cfg.radius * this.game.court.chunk;
       this.speed    = this.cfg.speed  * this.game.court.chunk;
+	console.log("ball speed " + this.speed);
       this.maxspeed = this.speed * 1.5;
       this.color    = this.game.color.ball;
       this.moveToPaddle();
@@ -607,7 +612,8 @@ Breakout = {
         ctx.fillText(this.label.text,   this.label.x, this.label.y);
         ctx.strokeText(this.label.text, this.label.x, this.label.y);
       }
-    }
+    },
+    getX: function(){return this.x}
 
   },
 
@@ -689,7 +695,9 @@ Breakout = {
     moveLeft:        function() { this.dleft  = 1; },
     moveRight:       function() { this.dright = 1; },  
     stopMovingLeft:  function() { this.dleft  = 0; },
-    stopMovingRight: function() { this.dright = 0; }
+    stopMovingRight: function() { this.dright = 0; },
+    getX: function(){return this.x + this.w/2},
+    getY: function(){return this.y}
 
   }
 
