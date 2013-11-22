@@ -6,6 +6,7 @@ Breakout.bot = {
 	initialize: function(game, cfg) {
 	      this.game = game;
 	      this.cfg  = cfg;
+
    	},
     
 	

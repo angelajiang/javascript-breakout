@@ -12,6 +12,8 @@
 //
 //=============================================================================
 
+
+
 if (!Function.prototype.bind) {
   Function.prototype.bind = function(obj) {
     var slice = [].slice,
@@ -509,9 +511,12 @@ Game = {
       this.front.width  = this.width;
       this.front.height = this.height;
       this.front2d      = this.front.getContext('2d');
+      this.dt = .005*2/3;
+      //this.slider = 1;
       this.addEvents();
       this.resetStats();
       this.resize();
+      this.counter = 0;
 
       this.game = Object.construct(game, this, this.cfg); // finally construct the game object itself
 
@@ -531,8 +536,19 @@ Game = {
     },
 
     loop: function() {
-      this._start  = Game.timestamp(); this.update(.005); // send dt as seconds
-      this._middle = Game.timestamp(); this.draw();
+	this.counter += 1;
+        var slidernumber = document.getElementById("slidernumber").value;
+        var skip_frame = Math.round(document.getElementById("frame_rate").value);
+        if(slidernumber > 100)
+            slidernumber = 100;
+        else if(slidernumber<0)
+            slidernumber = 0;
+        if(skip_frame<1)
+            skip_frame = 1;
+	console.log(slidernumber);
+	//this.slider = ;
+      this._start  = Game.timestamp(); this.update(this.dt *slidernumber/100/** this.slider*/); // send dt as seconds
+      this._middle = Game.timestamp(); if(this.counter%skip_frame===0)this.draw();
       this._end    = Game.timestamp();
       this.updateStats(this._middle - this._start, this._end - this._middle);
       this.lastFrame = this._start;

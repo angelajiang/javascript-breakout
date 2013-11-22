@@ -23,7 +23,7 @@ Breakout = {
 
     ball: {
       radius:  0.3,
-      speed:   100,
+      speed:   300,
       labels: {
         3: { text: 'ready...', fill: '#D82800', stroke: 'black', font: 'bold 28pt arial' },
         2: { text: 'set..',    fill: '#FC9838', stroke: 'black', font: 'bold 28pt arial' },
@@ -185,6 +185,8 @@ Breakout = {
     this.score.gainLife();
     this.nextLevel(true);
     this.ball.reset({launch: true});
+      this.paddle.stopMovingLeft();
+      this.paddle.stopMovingRight();
   },
 
   hitBrick: function(brick) {
@@ -457,7 +459,7 @@ Breakout = {
       this.radius   = this.cfg.radius * this.game.court.chunk;
       this.speed    = this.cfg.speed  * this.game.court.chunk;
 	console.log("ball speed " + this.speed);
-      this.maxspeed = this.speed * 1.5;
+      this.maxspeed = this.speed;
       this.color    = this.game.color.ball;
       this.moveToPaddle();
       this.setdir(0, 0);
