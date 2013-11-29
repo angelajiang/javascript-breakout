@@ -11,12 +11,15 @@ from flask import Flask, request
 app = Flask(__name__)
 
 #Tweakable parameters
-numActions = 2;
-maxPaddleX = 5;
-maxBallX = 10;
-maxBallV = 3;
-defaultReward = .1;
+paddleXDim = 650
+ballXDim = 650
+numActions = 2
+maxPaddleX = 65
+maxBallX = 65
+maxBallV = 3
+defaultReward = .1
 tableFile = 'table'
+
 
 @app.route('/create_table/<filename>')
 def create_table(filename):
@@ -44,6 +47,9 @@ while (qTable == None):
         f.close()
         create_table(tableFile)
 
+def shrink(curVal, shrinkedMax, maxVal):
+   return int((curVal/maxVal)*shrinkedMax)
+
 @app.route('/')
 @app.route('/<path:filename>')
 def send_file(filename):
@@ -51,9 +57,14 @@ def send_file(filename):
 
 @app.route('/get_move', methods=['POST'])
 def get_move():
+    global qTable
     paddleX = float(request.values["paddleX"])
     ballX = float(request.values["ballX"])
     ballV = float(request.values["ballV"])
+
+    paddleX = shrink(paddleX, maxPaddleX, paddleXDim)
+    ballX = shrink(ballX, maxBallX, ballXDim)
+
     if (ballX > paddleX):
         return "right"
     else:
