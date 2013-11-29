@@ -442,7 +442,9 @@ Breakout = {
 
     empty: function() {
       return (this.numhits == this.numbricks);
-    }
+    },
+      
+  getBricks: function(){return this.bricks;}
 
   },
 
@@ -615,7 +617,29 @@ Breakout = {
         ctx.strokeText(this.label.text, this.label.x, this.label.y);
       }
     },
-    getX: function(){return this.x}
+    getX: function(){return Math.round(this.x/this.game.court.chunk)-8},
+    getY: function() {return Math.round(this.y/this.game.court.chunk)-5},
+    getVelocity: function(){
+        angle = Math.round((Math.atan2(balldy,balldx) * 180 /Math.PI));
+        offcenter = Math.abs(angle)-90;
+        if(angle > 0){
+            if(Math.abs(offcenter) < 10)
+                return 1;
+            if(offcenter < 0)
+                return 0;
+            else
+                return 2;
+        }
+        if(Math.abs(offcenter) < 10)
+            return 4;
+        if(offcenter < 0)
+            return 3;
+        else
+            return 5;
+	},
+    getDX: function() {return this.dx},
+    getDY: function() {return this.dy}
+      
 
   },
 
@@ -698,8 +722,8 @@ Breakout = {
     moveRight:       function() { this.dright = 1; },  
     stopMovingLeft:  function() { this.dleft  = 0; },
     stopMovingRight: function() { this.dright = 0; },
-    getX: function(){return this.x + this.w/2},
-    getY: function(){return this.y}
+    getX: function(){return Math.round((this.x + this.w/2)/this.game.court.chunk)-11},
+    getY: function(){return Math.round(this.y/this.game.court.chunk)}
 
   }
 

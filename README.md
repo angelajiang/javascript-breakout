@@ -22,7 +22,7 @@ get_move():
     Called by learner.js
 
 Game parameters still needed:
-    ball velocity vector
+    ball velocity vector - ball.getVelocity(): returns integers 0 to 5 representing the 6 direction.
     max values for state parameters
     ball and paddleY's for when ball hits the paddle
 
