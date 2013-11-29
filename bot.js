@@ -8,7 +8,6 @@ Breakout.bot = {
 	      this.cfg  = cfg;
 
    	},
-    
 	
 	update:function(dt){
 		paddleX = this.game.paddle.getX();
