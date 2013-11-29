@@ -1,6 +1,12 @@
 Breakout
 ========
 
+To run:
+1. Start server
+    >> python server.py 5000
+2. Reach file in browser
+    http://localhost:5000/index.html
+
 Another HTML5 experiment to implement BREAKOUT in a `<canvas>`
 
  * You can find the [game here](http://codeincomplete.com/posts/2011/6/11/javascript_breakout/demo.html)
