@@ -21,6 +21,12 @@ get_move():
     Determines each move
     Called by learner.js
 
+Game parameters still needed:
+    ball velocity vector
+    max values for state parameters
+    ball and paddleY's for when ball hits the paddle
+
+
 Another HTML5 experiment to implement BREAKOUT in a `<canvas>`
 
  * You can find the [game here](http://codeincomplete.com/posts/2011/6/11/javascript_breakout/demo.html)

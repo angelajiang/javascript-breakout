@@ -12,7 +12,11 @@ jQuery(document).ready(jQuery(function($) {
                 gameObj = this.game;
                 paddleX = this.game.paddle.getX();
                 ballX = this.game.ball.getX();
-                ballV = 1;
+                ballV = 1;          //hard-coded
+                //Initialize variables to keep track of last state
+                lastPaddleX = 0;
+                lastBallX = 0;
+                lastBallV = 0;
                 if(this.game.ball.moving){
                     $.ajax({
                       type: "POST",
@@ -20,6 +24,9 @@ jQuery(document).ready(jQuery(function($) {
                           'paddleX': paddleX,
                           'ballX': ballX,
                           'ballV': ballV,
+                          'lastPaddleX' = paddleX;
+                          'lastBallX' = ballX;
+                          'lastBallV' = ballV;
                       },
                       url: "/get_move"
                     }).success(function(move) {
@@ -32,6 +39,10 @@ jQuery(document).ready(jQuery(function($) {
                             gameObj.paddle.moveLeft();
                         }
                     });
+                    //Update variables of last state
+                    lastPaddleX = paddleX;
+                    lastBallX = ballX;
+                    lastBallV = ballV;
                 }
             }
     }

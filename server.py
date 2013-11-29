@@ -61,6 +61,7 @@ def get_move():
 
 @app.route('/update_table')
 def update_table():
+    #For debugging to check if updates are written to file
     global qTable
     global tableFile
     qTable = qTable * 2
@@ -73,8 +74,8 @@ def print_table():
     tableStr = np.array_str(qTable)
     return tableStr
 
-@app.route('/ctrlc')
 def signal_handler(signal, frame):
+    #qTable written to file after ctrl-c
     frame = sys._getframe(0)
     global qTable
     global tableFile
