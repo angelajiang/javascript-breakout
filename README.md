@@ -22,7 +22,6 @@ get_move():
     Called by learner.js
 
 Game parameters still needed:
-    last state
     ball velocity vector
     max values for state parameters
     ball and paddleY's for when ball hits the paddle

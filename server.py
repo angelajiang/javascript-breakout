@@ -11,7 +11,8 @@ from flask import Flask, request
 app = Flask(__name__)
 
 ### GLOBALS ###
-state = dict()
+curState = dict(paddleX=0, ballX=0, ballV=0)
+lastState = dict()
 #Tweakable parameters
 paddleXDim = 650
 ballXDim = 650
@@ -20,6 +21,8 @@ maxPaddleX = int(paddleXDim/10)
 maxBallX = int(ballXDim/10)
 maxBallV = 3
 defaultReward = .1
+alpha = 1
+decay = .9
 tableFile = 'table'
 
 @app.route('/create_table/<filename>')
@@ -61,9 +64,17 @@ def eGreedy(state):
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
     if (rightVal > leftVal):
-        return "right"
+        return 1
     else:
-        return "left"
+        return 0
+
+def maxQ(state):
+    leftVal = indexTable(state, 0)
+    rightVal = indexTable(state, 1)
+    if (rightVal > leftVal):
+        return rightVal
+    else:
+        return leftVal
 
 def signal_handler(signal, frame):
     #qTable written to file after ctrl-c
@@ -86,16 +97,28 @@ def send_file(filename):
 @app.route('/get_move', methods=['POST'])
 def get_move():
     global qTable
-    global state
+    global curState
+    global lastState
+    lastState = curState.copy()
+
+    #Get current state
     paddleX = float(request.values["paddleX"])
     ballX = float(request.values["ballX"])
-    state['ballV'] = float(request.values["ballV"])
-    
+    curState['ballV'] = float(request.values["ballV"])
     #Shrink to state space
-    state['paddleX'] = shrink(paddleX, maxPaddleX, paddleXDim)
-    state['ballX'] = shrink(ballX, maxBallX, ballXDim)
+    curState['paddleX'] = shrink(paddleX, maxPaddleX, paddleXDim)
+    curState['ballX'] = shrink(ballX, maxBallX, ballXDim)
 
-    return eGreedy(state)
+    #Update last state
+    #if ballY = paddleY, reward = 1, else 0
+    stateMaxQ = maxQ(curState)
+    #updateQ(lastState, reward);
+
+    move = eGreedy(curState)
+    if (move):
+        return "right"
+    else:
+        return "left"
 
 @app.route('/update_table')
 def update_table():
