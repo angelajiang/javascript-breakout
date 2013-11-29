@@ -14,8 +14,6 @@ jQuery(document).ready(jQuery(function($) {
                 ballX = this.game.ball.getX();
                 ballV = 1;          //hard-coded
                 if(this.game.ball.moving){
-                    console.log('ballX ' + ballX);
-                    console.log('paddleX ' + paddleX);
                     $.ajax({
                       type: "POST",
                       data: {
