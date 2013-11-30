@@ -545,7 +545,6 @@ Game = {
             slidernumber = 0;
         if(skip_frame<1)
             skip_frame = 1;
-	console.log(slidernumber);
 	//this.slider = ;
       this._start  = Game.timestamp(); this.update(this.dt *slidernumber/100/** this.slider*/); // send dt as seconds
       this._middle = Game.timestamp(); if(this.counter%skip_frame===0)this.draw();
