@@ -27,6 +27,10 @@ jQuery(document).ready(jQuery(function($) {
                             gameObj.paddle.stopMovingLeft();
                             gameObj.paddle.moveRight();
                         }
+                        else if (move == 'stay'){
+                            gameObj.paddle.stopMovingLeft();
+                            gameObj.paddle.stopMovingRight();
+                        }
                         else{
                             gameObj.paddle.stopMovingRight();
                             gameObj.paddle.moveLeft();

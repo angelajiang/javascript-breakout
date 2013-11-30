@@ -14,16 +14,18 @@ app = Flask(__name__)
 curState = dict(paddleX=0, ballX=0, ballV=0)
 lastState = dict()
 #Tweakable parameters
-paddleXDim = 650
-ballXDim = 650
-numActions = 2
-maxPaddleX = int(paddleXDim/10)
-maxBallX = int(ballXDim/10)
-maxBallV = 3
+#table
+numActions = 3
+maxPaddleX = 24
+maxBallX = 30
+maxBallY = 24
+maxBallV = 6
+tableFile = 'table'
+#algorithm
 defaultReward = .1
 alpha = 1
 decay = .9
-tableFile = 'table'
+greedyProbability = .5
 
 @app.route('/create_table/<filename>')
 def create_table(filename):
@@ -63,16 +65,22 @@ def indexTable(state, action):
 def eGreedy(state):
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
+    stayVal = indexTable(state, 2)
     if (rightVal > leftVal):
         return 1
+    elif (rightVal == leftVal):
+        return 2
     else:
         return 0
 
 def maxQ(state):
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
+    stayVal = indexTable(state, 2)
     if (rightVal > leftVal):
         return rightVal
+    elif (rightVal == leftVal):
+        return stayVal
     else:
         return leftVal
 
@@ -102,12 +110,9 @@ def get_move():
     lastState = curState.copy()
 
     #Get current state
-    paddleX = float(request.values["paddleX"])
-    ballX = float(request.values["ballX"])
-    curState['ballV'] = float(request.values["ballV"])
-    #Shrink to state space
-    curState['paddleX'] = shrink(paddleX, maxPaddleX, paddleXDim)
-    curState['ballX'] = shrink(ballX, maxBallX, ballXDim)
+    curState['paddleX'] = int(request.values["paddleX"])
+    bcurState['ballX'] = int(request.values["ballX"])
+    curState['ballV'] = int(request.values["ballV"])
 
     #Update last state
     #if ballY = paddleY, reward = 1, else 0
@@ -115,8 +120,10 @@ def get_move():
     #updateQ(lastState, reward);
 
     move = eGreedy(curState)
-    if (move):
+    if (move == 1):
         return "right"
+    elif (move == 2):
+        return "stay"
     else:
         return "left"
 
