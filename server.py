@@ -15,12 +15,22 @@ curState = dict(paddleX=0, ballX=0, ballV=0)
 lastState = dict()
 #Tweakable parameters
 #table
-numActions = 3
-maxPaddleX = 24
-maxBallX = 30
-maxBallY = 24
-maxBallV = 6
 tableFile = 'table'
+dim = dict()
+dim['numActions'] = 3
+dim['maxPaddleX'] = 24 #0-24
+dim['maxBallX'] = 30   #0-30
+dim['maxBallY'] = 24   #0-24
+dim['maxBallV'] = 6
+#velocity mappings
+vMap = dict()
+vMap['downLeft'] = 1
+vMap['down'] = 2
+vMap['downRight'] = 3
+vMap['upLeft'] = 4
+vMap['up'] = 5
+vMap['upRight'] = 6
+
 #algorithm
 defaultReward = .1
 alpha = 1
@@ -36,7 +46,8 @@ def create_table(filename):
     global maxBallV
     global defaultReward
 
-    table = np.ones(shape=(numActions, maxPaddleX, maxBallX, maxBallV)) * defaultReward
+    #+1 for zero indexing
+    table = np.ones(shape=(numActions, maxPaddleX+1, maxBallX+1, maxBallY+1, maxBallV)) * defaultReward
     f = open(filename, 'w+')
     pickle.dump(table, f);
     f.close()
@@ -60,7 +71,8 @@ def indexTable(state, action):
    paddleX = state['paddleX']
    ballX = state['ballX']
    ballV = state['ballV']
-   return qTable[action, paddleX, ballX, ballV]
+   #-1 for zero indexing
+   return qTable[action, paddleX-1, ballX-1, ballV-1]
 
 def eGreedy(state):
     leftVal = indexTable(state, 0)
@@ -107,17 +119,25 @@ def get_move():
     global qTable
     global curState
     global lastState
+    global dim
+    global vMap
+
     lastState = curState.copy()
 
     #Get current state
     curState['paddleX'] = int(request.values["paddleX"])
-    bcurState['ballX'] = int(request.values["ballX"])
+    curState['ballX'] = int(request.values["ballX"])
     curState['ballV'] = int(request.values["ballV"])
+    curState['ballY'] = int(request.values["ballY"])
+
+    ballY = curState['ballY']
+    ballV = curState['ballV']
 
     #Update last state
     #if ballY = paddleY, reward = 1, else 0
-    stateMaxQ = maxQ(curState)
-    #updateQ(lastState, reward);
+    if (ballY == dim['maxBallY']) and (ballV == vMap['up'] or ballV == vMap['upLeft'] or ballV == vMap['upRight']):
+        stateMaxQ = maxQ(curState)
+        #updateQ(lastState, reward);
 
     move = eGreedy(curState)
     if (move == 1):
