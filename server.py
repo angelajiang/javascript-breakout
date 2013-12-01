@@ -5,6 +5,8 @@ import numpy as np
 import cPickle as pickle
 import signal
 import sys
+import random
+from random import randint
 from os import listdir
 from os.path import isfile, join
 from flask import Flask, request
@@ -87,17 +89,33 @@ def updateTable(state, action, value):
     return
 
 def eGreedy(state):
-    #Chooses a move due to eGreedy
+    global GREEDYPROB
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
     stayVal = indexTable(state, 2)
+    #Determine what q value(s) is the largest
     maxVal = max(leftVal, rightVal, stayVal)
+    if (leftVal == rightVal) and (rightVal == stayVal):
+        maxMove = random.choice([0,1,2])
     if (rightVal == maxVal):
-        return 1
+        if (rightVal == leftVal):
+            maxMove = random.choice([0,1])
+        elif (rightVal == stayVal):
+            maxMove = random.choice([1,2])
+        else:
+            maxMove = 1
     elif (leftVal == maxVal):
-        return 0
+        if (leftVal == stayVal):
+            maxMove = random.choice([0,2])
+        else:
+            maxMove = 0
     else:
-        return 2
+        maxMove = 2
+    #Based on e greedy probability, choose max or random
+    if random.random >= GREEDYPROB:
+        return randint(0,2)
+    else:
+        return maxMove
 
 def maxQ(state):
     leftVal = indexTable(state, 0)
