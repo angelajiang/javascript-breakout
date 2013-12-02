@@ -1,6 +1,5 @@
 import flask
 import os
-import sqlite3
 import numpy as np
 import cPickle as pickle
 import signal
@@ -189,7 +188,7 @@ def get_move():
 
     #Get current state
     LASTSTATE = CURSTATE.copy()
-    message = request.values['msgName']
+    message = str(request.values['msgName'])
     CURSTATE['paddleX'] = int(request.values["paddleX"])
     CURSTATE['ballX'] = int(request.values["ballX"])
     CURSTATE['ballV'] = int(request.values["ballV"])
@@ -200,10 +199,10 @@ def get_move():
     if (ballY == MAXBALLY-2) and (ballV == UP or ballV == UPLEFT or ballV == UPRIGHT):
         #Ball hit paddle
         reward = GOODREWARD
-    elif (message == 'lost'):
+    elif (message == 'lose'):
         #Ball and paddle on same plane, just lost
         reward = BADREWARD
-    elif (message == 'won'):
+    elif (message == 'win'):
         reward = WINREWARD
     else:
         reward = 0
@@ -305,5 +304,5 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    #app.debug = True
+    app.debug = True
     app.run()
