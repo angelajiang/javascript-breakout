@@ -42,14 +42,10 @@ jQuery(document).ready(jQuery(function($) {
                             gameObj.paddle.stopMovingLeft();
                             gameObj.paddle.stopMovingRight();
                         }
-                        else if (move == 'LOST'){
-                            console.log('LOSSSSSTTTTTTTTTTTTTTTT!!!!!!!!');
-                        }
                         else if (move == 'left'){
                             gameObj.paddle.stopMovingRight();
                             gameObj.paddle.moveLeft();
                         }else{
-                            debugger;
                             console.log("ballY: " + ballY + " ballV: " + ballV);
                         }
                     });
