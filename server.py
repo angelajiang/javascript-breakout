@@ -21,21 +21,23 @@ TABLEFILE = 'table'
 NUMACTIONS = 3
 MAXPADDLEX = 24 #0-24
 MAXBALLX = 30   #0-30
-MAXBALLY = 24   #0-24
+MAXBALLY = 25   #0-24
 MAXBALLV = 6
 #velocity mappings
-DOWNLEFT = 1
-DOWN = 2
-DOWNRIGHT = 3
-UPLEFT = 4
-UP = 5
-UPRIGHT = 6
+UPLEFT = 5
+UP = 4
+UPRIGHT = 3
+DOWNLEFT = 2
+DOWN = 1
+DOWNRIGHT = 0
 
 #algorithm
 DEFAULTREWARD = .1
 ALPHA = 1
 DECAY = .9
 GREEDYPROB = .5
+GOODREWARD = 1
+BADREWARD = -.5
 
 #create_table must be before QTABLE references it
 @app.route('/create_table/<filename>')
@@ -76,7 +78,7 @@ def indexTable(state, action):
    ballY = state['ballY']
    ballV = state['ballV']
    #-1 for zero indexing
-   return QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV-1]
+   return QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
 
 def updateTable(state, action, value):
     global QTABLE
@@ -85,7 +87,7 @@ def updateTable(state, action, value):
     ballY = state['ballY']
     ballV = state['ballV']
     #-1 for zero indexing
-    QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV-1] = value
+    QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
     return
 
 def eGreedy(state):
@@ -141,6 +143,8 @@ def updateQ(state, stateMaxQ, reward):
     global ALPHA
     global DECAY
     global GREEDYPROB
+    global BADREWARD
+    global GOODREWARD
 
     action = state['move']
     lastQ = indexTable(state, action)
@@ -165,9 +169,9 @@ def get_move():
     global UPLEFT
     global UPRIGHT
 
-    #Game over?
+    #Game already over?
     ballY = int(request.values["ballY"])
-    if (ballY >= MAXBALLY):
+    if (ballY > MAXBALLY):
         return "stay"
 
     #Get current state
@@ -179,8 +183,12 @@ def get_move():
 
     #Update last state
     ballV = CURSTATE['ballV']
-    if (ballY == MAXBALLY) and (ballV == UP or ballV == UPLEFT or ballV == UPRIGHT):
-        reward = 1
+    if (ballY == MAXBALLY-2) and (ballV == UP or ballV == UPLEFT or ballV == UPRIGHT):
+        #Ball hit paddle
+        reward = GOODREWARD
+    elif (ballY == MAXBALLY):
+        #Ball and paddle on same plane, just lost
+        reward = BADREWARD
     else:
         reward = 0
     stateMaxQ = maxQ(CURSTATE)
@@ -204,6 +212,21 @@ def update_table():
     QTABLE = QTABLE * 2
     tableStr = np.array_str(QTABLE)
     return tableStr
+
+@app.route('/dispq/<paddleX>/<ballX>/<ballY>/<ballV>')
+def dispq(paddleX, ballX, ballY, ballV):
+    global QTABLE
+    tmp = dict()
+    tmp['paddleX'] = int(paddleX)
+    tmp['ballX'] = int(ballX)
+    tmp['ballY'] = int(ballY)
+    tmp['ballV'] = int(ballV)
+    leftVal = indexTable(tmp, 0)
+    rightVal = indexTable(tmp, 1)
+    stayVal = indexTable(tmp, 2)
+    statestr = str(paddleX) + ' ' + str(ballX) + ' ' + str(ballY) + ' ' + str(ballV)
+    qstr = str(leftVal) + ' ' + str(rightVal) + ' ' + str(stayVal)
+    return "state: " + statestr + '\n' + "q vals: " + qstr
 
 @app.route('/disp/<obj>')
 def disp(obj):
