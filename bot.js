@@ -15,7 +15,7 @@ Breakout.bot = {
 
     },
     
-    update:function(dt){
+    update:function(){
 	paddleX = this.game.paddle.getX();
 	ballX = this.game.ball.getX();
         ballY = this.game.ball.getY();

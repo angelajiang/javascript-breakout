@@ -118,11 +118,10 @@ Breakout = {
 
     update: function(dt) {
         this.court.update(dt);
-        this.bot.update(dt);
+        this.bot.update();
         this.paddle.update(dt);
         this.ball.update(dt);
         this.score.update(dt);
-
     },
 
     draw: function(ctx) {
@@ -181,6 +180,8 @@ Breakout = {
         else {
             this.ball.reset({launch: true});
         }
+        
+        this.bot.loseBall();
     },
 
     winLevel: function() {
@@ -190,6 +191,8 @@ Breakout = {
         this.ball.reset({launch: true});
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
+        
+        this.bot.winLevel();
     },
 
     hitBrick: function(brick) {
@@ -448,7 +451,6 @@ Breakout = {
         },
         
         getBricks: function(){return this.bricks;}
-
     },
 
     //=============================================================================
@@ -624,6 +626,9 @@ Breakout = {
         getX: function(){return Math.round(this.x/this.game.court.chunk)-8},
         getY: function() {return Math.round(this.y/this.game.court.chunk)-5},
         getVelocity: function(){
+            balldx = this.dx;
+            balldy = this.dy;
+
             angle = Math.round((Math.atan2(balldy,balldx) * 180 /Math.PI));
             offcenter = Math.abs(angle)-90;
             if(angle > 0){
