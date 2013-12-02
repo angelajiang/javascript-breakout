@@ -80,7 +80,7 @@ def indexTable(state, action):
    ballY = state['ballY']
    ballV = state['ballV']
    #-1 for zero indexing
-   return QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
+   return QTABLE[action, paddleX, ballX, ballY, ballV]
 
 def updateTable(state, action, value):
     global QTABLE
@@ -89,7 +89,7 @@ def updateTable(state, action, value):
     ballY = state['ballY']
     ballV = state['ballV']
     #-1 for zero indexing
-    QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
+    QTABLE[action, paddleX, ballX, ballY, ballV] = value
     #print id(QTABLE)
     return
 
