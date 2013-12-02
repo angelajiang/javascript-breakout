@@ -52,7 +52,7 @@ def create_table(filename):
 
     #+1 for zero indexing
     table = np.ones(shape=(NUMACTIONS, MAXPADDLEX+1, MAXBALLX+1, MAXBALLY+1, MAXBALLV)) * DEFAULTREWARD
-    f = open(filename, 'w+')
+    f = open(filename, 'w')
     pickle.dump(table, f);
     f.close()
     return "Table stored in filename: " + filename
@@ -67,6 +67,7 @@ while (QTABLE == None):
     except:
         create_table(TABLEFILE)
 
+print id(QTABLE)
 ### MODULES ###
 def shrink(curVal, shrinkedMax, maxVal):
    return int((curVal/maxVal)*shrinkedMax)
@@ -88,6 +89,8 @@ def updateTable(state, action, value):
     ballV = state['ballV']
     #-1 for zero indexing
     QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
+    print "updated!", value, QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
+    print id(QTABLE)
     return
 
 def eGreedy(state):
@@ -127,9 +130,9 @@ def maxQ(state):
 
 def signal_handler(signal, frame):
     #QTABLE written to file after ctrl-c
-    frame = sys._getframe(0)
     global QTABLE
-    global TABLEFILE
+    frame = sys._getframe(0)
+    print id(QTABLE)
     f = open(TABLEFILE, 'w')
     pickle.dump(QTABLE, f)
     f.close()
@@ -268,5 +271,5 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    app.debug = True
+    #app.debug = True
     app.run()
