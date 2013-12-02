@@ -4,19 +4,26 @@
 jQuery(document).ready(jQuery(function($) {
     Breakout.bot = {
         initialize: function(game, cfg) {
-                this.game = game;
-                this.cfg  = cfg;
-		this.minballX = 15;
-		this.maxballX = 15;
-		this.minballY = 15;
-		this.maxballY = 15;
-		this.minpaddleX = 5;
-		this.maxpaddleX = 5;
+            this.game = game;
+            this.cfg = cfg;
+            this.minballX = 15;
+            this.maxballX = 15;
+            this.minballY = 15;
+            this.maxballY = 15;
+            this.minpaddleX = 5;
+            this.maxpaddleX = 5;
+            this.lastHit = false;
+        },
+
+
+        hit: function() {
+            this.lastHit = true;
         },
 
         loseBall: function() {
             this.get_move("lose");
         },
+        
         winLevel: function() {
             this.get_move("win");
         },
@@ -53,18 +60,20 @@ jQuery(document).ready(jQuery(function($) {
                 }
             })
         },
-                
+        
         getState: function() {
-            paddleX = this.game.paddle.getX();
-            ballX = this.game.ball.getX();
-            ballY = this.game.ball.getY();
-	    ballV = this.game.ball.getVelocity();        
-
+            var paddleX = this.game.paddle.getX();
+            var ballX = this.game.ball.getX();
+            var ballY = this.game.ball.getY();
+	    var ballV = this.game.ball.getVelocity();
+            var wasHit = this.lastHit;
+            this.lastHit = false;
             return {
                 'paddleX': paddleX,
-                'ballX': ballX,
-                'ballV': ballV,
-                'ballY': ballY,
+                'ballX'  : ballX,
+                'ballV'  : ballV,
+                'ballY'  : ballY,
+                'wasHit' : wasHit,
             };
         }
     }
