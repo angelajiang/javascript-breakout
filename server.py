@@ -189,6 +189,7 @@ def get_move():
     #Get current state
     LASTSTATE = CURSTATE.copy()
     message = str(request.values['msgName'])
+    wasHit = str(request.values['wasHit'])
     CURSTATE['paddleX'] = int(request.values["paddleX"])
     CURSTATE['ballX'] = int(request.values["ballX"])
     CURSTATE['ballV'] = int(request.values["ballV"])
@@ -196,7 +197,7 @@ def get_move():
 
     #Update last state
     ballV = CURSTATE['ballV']
-    if (ballY == MAXBALLY-2) and (ballV == UP or ballV == UPLEFT or ballV == UPRIGHT):
+    if (wasHit == 'true'):
         #Ball hit paddle
         reward = GOODREWARD
     elif (message == 'lose'):
