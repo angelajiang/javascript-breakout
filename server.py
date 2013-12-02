@@ -25,7 +25,7 @@ TABLEFILE = 'table'
 NUMACTIONS = 3
 MAXPADDLEX = 24 #0-24
 MAXBALLX = 30   #0-30
-MAXBALLY = 26   #0-24
+MAXBALLY = 26   #changed from 0-24
 MAXBALLV = 6
 #velocity mappings
 UPLEFT = 5
@@ -39,9 +39,9 @@ DOWNRIGHT = 0
 DEFAULTREWARD = .1
 ALPHA = 1
 DECAY = .9
-GREEDYPROB = .5
 GOODREWARD = 1
 BADREWARD = -1000
+WINREWARD = 10
 
 #create_table must be before QTABLE references it
 @app.route('/create_table/<filename>')
@@ -94,7 +94,6 @@ def updateTable(state, action, value):
     return
 
 def eGreedy(state):
-    global GREEDYPROB
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
     stayVal = indexTable(state, 2)
@@ -175,6 +174,7 @@ def get_move():
     global CURSTATE
     global LASTSTATE
     global MAXBALLY
+    global WINREWARD
     global UP
     global UPLEFT
     global UPRIGHT
@@ -189,6 +189,7 @@ def get_move():
 
     #Get current state
     LASTSTATE = CURSTATE.copy()
+    message = request.values['msgName']
     CURSTATE['paddleX'] = int(request.values["paddleX"])
     CURSTATE['ballX'] = int(request.values["ballX"])
     CURSTATE['ballV'] = int(request.values["ballV"])
@@ -199,9 +200,11 @@ def get_move():
     if (ballY == MAXBALLY-2) and (ballV == UP or ballV == UPLEFT or ballV == UPRIGHT):
         #Ball hit paddle
         reward = GOODREWARD
-    elif (ballY == MAXBALLY):
+    elif (message == 'lost'):
         #Ball and paddle on same plane, just lost
         reward = BADREWARD
+    elif (message == 'won'):
+        reward = WINREWARD
     else:
         reward = 0
     stateMaxQ = maxQ(CURSTATE)
