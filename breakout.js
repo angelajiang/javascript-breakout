@@ -120,11 +120,8 @@ Breakout = {
         this.court.update(dt);
         this.bot.update();
         this.paddle.update(dt);
-        didHit = this.ball.update(dt);
+        this.ball.update(dt);
         this.score.update(dt);
-        if(didHit) {
-            this.bot.hit();
-        }        
     },
 
     draw: function(ctx) {
@@ -548,7 +545,7 @@ Breakout = {
         },
 
         update: function(dt) {
-
+            var hit = false;
             if (!this.moving)
                 return this.moveToPaddle();
 
@@ -579,7 +576,7 @@ Breakout = {
 
                 if ((closest.item == this.game.paddle) && (closest.point.d == 'top')) {
                     p2.dx = this.speed * (closest.point.x - (this.game.paddle.left + this.game.paddle.w/2)) / (this.game.paddle.w/2);
-                    this.game.playSound('paddle');
+                    this.bot.hit();
                 }
 
                 this.setpos(closest.point.x, closest.point.y);
