@@ -290,6 +290,33 @@ Breakout.Levels = [
       "pppppPPPPPpppppPPPPPpppppPPPPP",
       "bbbbbBBBBBbbbbbBBBBBbbbbbBBBBB"
     ]
+  }, 
+  { colors: Breakout.Colors.pastel,
+    bricks: [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "", "","", "y"
+    ]
   },
 
 
