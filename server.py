@@ -18,7 +18,7 @@ CURSTATE = dict(paddleX=1, ballX=1, ballY = 1, ballV=1, move=2)
 LASTSTATE = dict()
 UPDATECOUNT = 0
 WRITECOUNT = 0
-PERIOD = 100
+PERIOD = 2000
 #Tweakable parameters
 #table
 TABLEFILE = 'table'
@@ -73,9 +73,6 @@ while (QTABLE == None):
 
 print id(QTABLE)
 ### MODULES ###
-def shrink(curVal, shrinkedMax, maxVal):
-   return int((curVal/maxVal)*shrinkedMax)
-
 def indexTable(state, action):
    global QTABLE
    paddleX = state['paddleX']
@@ -96,7 +93,7 @@ def updateTable(state, action, value):
     #print id(QTABLE)
     return
 
-def eGreedy2(state):
+def eGreedy(state):
     global GREEDYPROB
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
@@ -112,6 +109,8 @@ def eGreedy2(state):
     if random.random >= greedyProb:
         return randint(0,2)
     else:
+        #Choose the move that maximizes q value.
+        #If multiple valuse are equal, choose randomly between them
         if (leftVal == rightVal) and (rightVal == stayVal):
             return random.choice([0,1,2])
         if (rightVal == choice):
@@ -129,36 +128,8 @@ def eGreedy2(state):
         else:
             return 2
 
-def eGreedy(state):
-    global GREEDYPROB
-    leftVal = indexTable(state, 0)
-    rightVal = indexTable(state, 1)
-    stayVal = indexTable(state, 2)
-    #Determine what q value(s) is the largest
-    maxVal = max(leftVal, rightVal, stayVal)
-    if (leftVal == rightVal) and (rightVal == stayVal):
-        maxMove = random.choice([0,1,2])
-    if (rightVal == maxVal):
-        if (rightVal == leftVal):
-            maxMove = random.choice([0,1])
-        elif (rightVal == stayVal):
-            maxMove = random.choice([1,2])
-        else:
-            maxMove = 1
-    elif (leftVal == maxVal):
-        if (leftVal == stayVal):
-            maxMove = random.choice([0,2])
-        else:
-            maxMove = 0
-    else:
-        maxMove = 2
-    #Based on e greedy probability, choose max or random
-    if random.random >= GREEDYPROB:
-        return randint(0,2)
-    else:
-        return maxMove
-
 def maxQ(state):
+    #Returns the maximum q value of the state
     leftVal = indexTable(state, 0)
     rightVal = indexTable(state, 1)
     stayVal = indexTable(state, 2)
@@ -244,7 +215,7 @@ def get_move():
         UPDATECOUNT = 0
 
     #Get move for current state
-    move = eGreedy2(CURSTATE)
+    move = eGreedy(CURSTATE)
     CURSTATE['move'] = move
     UPDATECOUNT+=1
     if (move == 1):
@@ -256,6 +227,7 @@ def get_move():
 
 @app.route('/serialize/<filename>')
 def serialize(filename):
+    #Writes qtable to filename
     global QTABLE
     frame = sys._getframe(0)
     print id(QTABLE)
@@ -267,6 +239,7 @@ def serialize(filename):
 @app.route('/update_table')
 def update_table():
     #For debugging to check if updates are written to file
+    #Different like updateTable!
     global QTABLE
     global TABLEFILE
     QTABLE = QTABLE * 2
@@ -275,6 +248,7 @@ def update_table():
 
 @app.route('/dispq/<paddleX>/<ballX>/<ballY>/<ballV>')
 def dispq(paddleX, ballX, ballY, ballV):
+    #Displays q values given a state
     global QTABLE
     tmp = dict()
     tmp['paddleX'] = int(paddleX)
