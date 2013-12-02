@@ -23,8 +23,12 @@ Breakout.bot = {
         balldy = this.game.ball.getDY();
 	b = this.game.court.getBricks();
 	v = this.game.ball.getVelocity();        
-	console.log(b);
         if(this.game.ball.moving){
+		var p = Math.random();
+		console.log(p);
+		if(p < .1){
+
+
             if(ballX+8 > paddleX+11){
                 this.game.paddle.stopMovingLeft();
                 this.game.paddle.moveRight();
@@ -37,6 +41,7 @@ Breakout.bot = {
                 this.game.paddle.stopMovingRight();
                 this.game.paddle.moveLeft();
             }
+}
         }
         
 	}

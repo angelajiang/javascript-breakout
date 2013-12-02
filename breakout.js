@@ -160,6 +160,11 @@ Breakout = {
 
   onlose: function() {
     this.playSound('gameover');
+    this.refreshDOM();
+    this.score.reset();
+    this.ball.reset({launch: true});
+      this.paddle.stopMovingLeft();
+      this.paddle.stopMovingRight();
   },
 
   onleavegame: function() {
