@@ -22,19 +22,19 @@ jQuery(document).ready(jQuery(function($) {
         },
 
         update: function(){
-            this.get_move("move");
+            if(this.game.ball.moving) {
+                this.get_move("move");
+            }
         },
 
         get_move: function(msgName) {
-            state = this.getState();
+            data = this.getState();
+            data.msgName = msgName;
             gameObj = this.game;
             
             $.ajax({
                 type: "POST",
-                data: {
-                    msgName: msgName,
-                    state: state
-                },
+                data: data,
                 url: "/get_move"
             }).success(function(move) {
                 if(move == 'right'){
