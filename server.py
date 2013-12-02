@@ -6,6 +6,7 @@ import cPickle as pickle
 import signal
 import sys
 import random
+from math import exp
 from random import randint
 from os import listdir
 from os.path import isfile, join
@@ -37,7 +38,7 @@ ALPHA = 1
 DECAY = .9
 GREEDYPROB = .5
 GOODREWARD = 1
-BADREWARD = -.5
+BADREWARD = -1000
 
 #create_table must be before QTABLE references it
 @app.route('/create_table/<filename>')
@@ -67,7 +68,7 @@ while (QTABLE == None):
     except:
         create_table(TABLEFILE)
 
-print id(QTABLE)
+#print id(QTABLE)
 ### MODULES ###
 def shrink(curVal, shrinkedMax, maxVal):
    return int((curVal/maxVal)*shrinkedMax)
@@ -89,9 +90,41 @@ def updateTable(state, action, value):
     ballV = state['ballV']
     #-1 for zero indexing
     QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
-    print "updated!", value, QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
-    print id(QTABLE)
+    #print id(QTABLE)
     return
+
+def eGreedy2(state):
+    global GREEDYPROB
+    leftVal = indexTable(state, 0)
+    rightVal = indexTable(state, 1)
+    stayVal = indexTable(state, 2)
+    eLeft = exp(leftVal)
+    eRight = exp(rightVal)
+    eStay = exp(stayVal)
+    denom = eLeft + eRight + eStay
+    leftP = eLeft/denom
+    rightP = eRight/denom
+    stayP = eStay/denom
+    greedyProb = max(leftP, rightP, stayP) 
+    if random.random >= greedyProb:
+        return randint(0,2)
+    else:
+        if (leftVal == rightVal) and (rightVal == stayVal):
+            return random.choice([0,1,2])
+        if (rightVal == choice):
+            if (rightVal == leftVal):
+                return random.choice([0,1])
+            elif (rightVal == stayVal):
+                return random.choice([1,2])
+            else:
+                return 1
+        elif (leftVal == choice):
+            if (leftVal == stayVal):
+                return random.choice([0,2])
+            else:
+                return 0
+        else:
+            return 2
 
 def eGreedy(state):
     global GREEDYPROB
@@ -132,7 +165,7 @@ def signal_handler(signal, frame):
     #QTABLE written to file after ctrl-c
     global QTABLE
     frame = sys._getframe(0)
-    print id(QTABLE)
+    #print id(QTABLE)
     f = open(TABLEFILE, 'w')
     pickle.dump(QTABLE, f)
     f.close()
@@ -198,7 +231,7 @@ def get_move():
     updateQ(LASTSTATE, stateMaxQ, reward);
 
     #Get move for current state
-    move = eGreedy(CURSTATE)
+    move = eGreedy2(CURSTATE)
     CURSTATE['move'] = move
     if (move == 1):
         return "right"
@@ -271,5 +304,5 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    #app.debug = True
+    app.debug = True
     app.run()
