@@ -159,12 +159,6 @@ Breakout = {
   },
 
   onlose: function() {
-    this.playSound('gameover');
-    this.refreshDOM();
-    this.score.reset();
-    this.ball.reset({launch: true});
-      this.paddle.stopMovingLeft();
-      this.paddle.stopMovingRight();
   },
 
   onleavegame: function() {
@@ -177,9 +171,13 @@ Breakout = {
   },
 
   loseBall: function() {
-    this.playSound('loselife');
-    if (this.score.loseLife())
-      this.lose();
+      if (this.score.loseLife()){
+          this.score.reset();
+          this.resetLevel();
+          this.paddle.stopMovingLeft();
+          this.paddle.stopMovingRight();
+          this.ball.reset({launch: false, launchNow: true});
+      }
     else {
       this.ball.reset({launch: true});
     }
@@ -465,7 +463,6 @@ Breakout = {
     reset: function(options) {
       this.radius   = this.cfg.radius * this.game.court.chunk;
       this.speed    = this.cfg.speed  * this.game.court.chunk;
-	console.log("ball speed " + this.speed);
       this.maxspeed = this.speed;
       this.color    = this.game.color.ball;
       this.moveToPaddle();
@@ -479,6 +476,8 @@ Breakout = {
       ].concat(this.game.court.bricks);
       if (options && options.launch)
         this.launch();
+      else if (options && options.launchNow)
+          this.launchNow();
     },
 
     moveToPaddle: function() {
