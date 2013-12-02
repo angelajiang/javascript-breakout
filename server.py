@@ -25,7 +25,7 @@ TABLEFILE = 'table'
 NUMACTIONS = 3
 MAXPADDLEX = 24 #0-24
 MAXBALLX = 30   #0-30
-MAXBALLY = 25   #0-24
+MAXBALLY = 26   #0-24
 MAXBALLV = 6
 #velocity mappings
 UPLEFT = 5
@@ -79,8 +79,8 @@ def indexTable(state, action):
    ballX = state['ballX']
    ballY = state['ballY']
    ballV = state['ballV']
-   #-1 for zero indexing
-   return QTABLE[action, paddleX, ballX, ballY, ballV]
+   #-1 for zero indexing?
+   return QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
 
 def updateTable(state, action, value):
     global QTABLE
@@ -89,7 +89,7 @@ def updateTable(state, action, value):
     ballY = state['ballY']
     ballV = state['ballV']
     #-1 for zero indexing
-    QTABLE[action, paddleX, ballX, ballY, ballV] = value
+    QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
     #print id(QTABLE)
     return
 
