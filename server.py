@@ -16,6 +16,9 @@ app = Flask(__name__)
 ### GLOBALS ###
 CURSTATE = dict(paddleX=1, ballX=1, ballY = 1, ballV=1, move=2)
 LASTSTATE = dict()
+UPDATECOUNT = 0
+WRITECOUNT = 0
+PERIOD = 100
 #Tweakable parameters
 #table
 TABLEFILE = 'table'
@@ -68,7 +71,7 @@ while (QTABLE == None):
     except:
         create_table(TABLEFILE)
 
-#print id(QTABLE)
+print id(QTABLE)
 ### MODULES ###
 def shrink(curVal, shrinkedMax, maxVal):
    return int((curVal/maxVal)*shrinkedMax)
@@ -165,7 +168,7 @@ def signal_handler(signal, frame):
     #QTABLE written to file after ctrl-c
     global QTABLE
     frame = sys._getframe(0)
-    #print id(QTABLE)
+    print id(QTABLE)
     f = open(TABLEFILE, 'w')
     pickle.dump(QTABLE, f)
     f.close()
@@ -204,6 +207,9 @@ def get_move():
     global UP
     global UPLEFT
     global UPRIGHT
+    global UPDATECOUNT
+    global PERIOD
+    global WRITECOUNT
 
     #Game already over?
     ballY = int(request.values["ballY"])
@@ -230,15 +236,33 @@ def get_move():
     stateMaxQ = maxQ(CURSTATE)
     updateQ(LASTSTATE, stateMaxQ, reward);
 
+    #Periodically, write to new table
+    if UPDATECOUNT > PERIOD:
+        filename = "table_" +  str(WRITECOUNT)
+        serialize(filename)
+        WRITECOUNT+=1
+        UPDATECOUNT = 0
+
     #Get move for current state
     move = eGreedy2(CURSTATE)
     CURSTATE['move'] = move
+    UPDATECOUNT+=1
     if (move == 1):
         return "right"
     elif (move == 2):
         return "stay"
     else:
         return "left"
+
+@app.route('/serialize/<filename>')
+def serialize(filename):
+    global QTABLE
+    frame = sys._getframe(0)
+    print id(QTABLE)
+    f = open(filename, 'w')
+    pickle.dump(QTABLE, f)
+    f.close()
+    return str(id(QTABLE)) + " written to " + filename
 
 @app.route('/update_table')
 def update_table():
@@ -304,5 +328,5 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    app.debug = True
+    #app.debug = True
     app.run()
