@@ -120,8 +120,11 @@ Breakout = {
         this.court.update(dt);
         this.bot.update();
         this.paddle.update(dt);
-        this.ball.update(dt);
+        didHit = this.ball.update(dt);
         this.score.update(dt);
+        if(didHit) {
+            this.bot.hit();
+        }        
     },
 
     draw: function(ctx) {
@@ -170,6 +173,8 @@ Breakout = {
     },
 
     loseBall: function() {
+        this.bot.loseBall();
+
         if (this.score.loseLife()){
             this.score.reset();
             this.resetLevel();
@@ -180,11 +185,11 @@ Breakout = {
         else {
             this.ball.reset({launch: true});
         }
-        
-        this.bot.loseBall();
     },
 
     winLevel: function() {
+        this.bot.winLevel();
+        
         this.playSound('levelup');
         this.score.gainLife();
         this.nextLevel(true);
@@ -192,7 +197,6 @@ Breakout = {
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
         
-        this.bot.winLevel();
     },
 
     hitBrick: function(brick) {
