@@ -25,8 +25,7 @@ Breakout.bot = {
 	v = this.game.ball.getVelocity();        
         if(this.game.ball.moving){
 		var p = Math.random();
-		console.log(p);
-		if(p < .1){
+		if(p < .99){
 
 
             if(ballX+8 > paddleX+11){
