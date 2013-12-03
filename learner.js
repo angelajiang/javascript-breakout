@@ -40,6 +40,7 @@ jQuery(document).ready(jQuery(function($) {
 
             data.msgName = msgName;
             $.ajax({
+		async: false,
                 type: "POST",
                 data: data,
                 url: "/get_move"
