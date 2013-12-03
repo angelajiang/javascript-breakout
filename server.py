@@ -305,5 +305,5 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    app.debug = True
+    #app.debug = True
     app.run()
