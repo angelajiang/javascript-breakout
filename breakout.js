@@ -626,13 +626,10 @@ Breakout = {
                 ctx.strokeText(this.label.text, this.label.x, this.label.y);
             }
         },
-        getX: function(){return Math.round(this.x/this.game.court.chunk)-8},
-        getY: function() {return Math.round(this.y/this.game.court.chunk)-5},
+        getX: function(){return Math.round((this.x-this.game.court.left)/this.game.court.chunk)},
+        getY: function() {return Math.round((this.y-this.game.court.top)/this.game.court.chunk)},
         getVelocity: function(){
-            balldx = this.dx;
-            balldy = this.dy;
-
-            angle = Math.round((Math.atan2(balldy,balldx) * 180 /Math.PI));
+            angle = Math.round((Math.atan2(this.dy,this.dx) * 180 /Math.PI));
             offcenter = Math.abs(angle)-90;
             if(angle > 0){
                 if(Math.abs(offcenter) < 10)
@@ -734,8 +731,8 @@ Breakout = {
         moveRight:       function() { this.dright = 1; },  
         stopMovingLeft:  function() { this.dleft  = 0; },
         stopMovingRight: function() { this.dright = 0; },
-        getX: function(){return Math.round((this.x + this.w/2)/this.game.court.chunk)-11},
-        getY: function(){return Math.round(this.y/this.game.court.chunk)}
+        getX: function(){return Math.round((this.x-this.game.court.left)/this.game.court.chunk)},
+        getY: function(){return Math.round((this.y-this.game.court.top)/this.game.court.chunk)}
 
     }
 
