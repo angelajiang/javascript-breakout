@@ -205,7 +205,7 @@ def get_move():
         reward = BADREWARD
     elif (message == 'win'):
         reward = WINREWARD
-    else:
+    elif (message == 'move'):
         reward = 0
     stateMaxQ = maxQ(CURSTATE)
     updateQ(LASTSTATE, stateMaxQ, reward);
