@@ -5,6 +5,7 @@ import cPickle as pickle
 import signal
 import sys
 import random
+import gc
 from math import exp
 from random import randint
 from os import listdir
@@ -95,10 +96,18 @@ def eGreedy(state):
     eLeft = exp(leftVal)
     eRight = exp(rightVal)
     eStay = exp(stayVal)
-    denom = eLeft + eRight + eStay
-    leftP = eLeft/denom
-    rightP = eRight/denom
-    stayP = eStay/denom
+    denom = float(eLeft + eRight + eStay)
+    if (denom == 0):
+        #If sum of eValues is 0, eVal/1 will be between 0 and 1
+        denom = 1
+    try:
+        leftP = eLeft/denom
+        rightP = eRight/denom
+        stayP = eStay/denom
+    except:
+        leftP = .1
+        rightP = .1
+        stayP = .1
     greedyProb = max(leftP, rightP, stayP) 
     if random.random >= greedyProb:
         return randint(0,2)
