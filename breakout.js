@@ -170,7 +170,6 @@ Breakout = {
     },
 
     loseBall: function() {
-        this.bot.loseBall();
 
         if (this.score.loseLife()){
             this.score.reset();
@@ -182,18 +181,21 @@ Breakout = {
         else {
             this.ball.reset({launch: true});
         }
+
+        this.bot.loseBall();
     },
 
     winLevel: function() {
-        this.bot.winLevel();
-        
         this.playSound('levelup');
         this.score.gainLife();
         this.nextLevel(true);
         this.ball.reset({launch: true});
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
-        
+
+        console.log("winLevel");
+        this.bot.winLevel();
+
     },
 
     hitBrick: function(brick) {
@@ -576,7 +578,7 @@ Breakout = {
 
                 if ((closest.item == this.game.paddle) && (closest.point.d == 'top')) {
                     p2.dx = this.speed * (closest.point.x - (this.game.paddle.left + this.game.paddle.w/2)) / (this.game.paddle.w/2);
-                    this.bot.hit();
+                    this.game.bot.hit();
                 }
 
                 this.setpos(closest.point.x, closest.point.y);

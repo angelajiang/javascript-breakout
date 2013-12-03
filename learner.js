@@ -35,10 +35,10 @@ jQuery(document).ready(jQuery(function($) {
         },
 
         get_move: function(msgName) {
-            data = this.getState();
+            var data = this.getState();
+            var gameObj = this.game;
+
             data.msgName = msgName;
-            gameObj = this.game;
-            
             $.ajax({
                 type: "POST",
                 data: data,
