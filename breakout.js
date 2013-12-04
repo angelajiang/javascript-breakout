@@ -372,7 +372,7 @@ Breakout = {
         },
 
         resize: function() {
-
+            this.regionNumber = [0,0,0,0,0,0];
             this.chunk  = Math.floor(Math.min(this.game.width, this.game.height) / (Math.max(this.cfg.xchunks, this.cfg.ychunks) + 4)); // room for court plus 2 chunk wall either side
             this.width  = this.cfg.xchunks * this.chunk;
             this.height = this.cfg.ychunks * this.chunk;
@@ -389,11 +389,15 @@ Breakout = {
             this.wall.right = Game.Math.bound({x: this.right,                 y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
 
             for(n = 0 ; n < this.numbricks ; n++) {
+
                 brick = this.bricks[n];
                 brick.x = this.left + (brick.pos.x1 * this.chunk);
                 brick.y = this.top  + (brick.pos.y  * this.chunk);
                 brick.w = (brick.pos.x2 - brick.pos.x1 + 1) * this.chunk;
                 brick.h = this.chunk;
+		brick.region = Math.floor((brick.pos.x2+brick.pos.x1)/10);
+		if(brick.hit === false)
+			this.regionNumber[brick.region]++;
                 Game.Math.bound(brick);
             }
 
@@ -444,6 +448,7 @@ Breakout = {
         },
 
         remove: function(brick) {
+            this.regionNumber[brick.region]--;
             brick.hit = true;
             this.numhits++;
             this.rerender = true;
@@ -453,7 +458,7 @@ Breakout = {
             return (this.numhits == this.numbricks);
         },
         
-        getBricks: function(){return this.bricks;}
+        getBricks: function(){return this.regionNumbers;}
     },
 
     //=============================================================================
