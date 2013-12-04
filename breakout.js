@@ -145,7 +145,7 @@ Breakout = {
     },
 
     onmenu: function() {
-        this.resetLevel();
+        this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.paddle.reset();
         this.ball.reset();
         this.refreshDOM();
@@ -173,7 +173,7 @@ Breakout = {
 
         if (this.score.loseLife()){
             this.score.reset();
-            this.resetLevel();
+            this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
             this.paddle.stopMovingLeft();
             this.paddle.stopMovingRight();
             this.ball.reset({launch: false, launchNow: true});
@@ -188,7 +188,7 @@ Breakout = {
     winLevel: function() {
         this.playSound('levelup');
         this.score.gainLife();
-        this.nextLevel(true);
+        this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.ball.reset({launch: true});
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
@@ -207,7 +207,7 @@ Breakout = {
             this.winLevel();
     },
 
-    resetLevel: function() { this.setLevel(); },
+    resetLevel: function(level) { this.setLevel(level); },
     setLevel: function(level) {
         level = (typeof level == 'undefined') ? (this.storage.level ? parseInt(this.storage.level) : 0) : level;
         level = level < Breakout.Levels.length ? level : 0;
