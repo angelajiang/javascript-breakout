@@ -14,21 +14,22 @@ from flask import Flask, request
 app = Flask(__name__)
 
 ### GLOBALS ###
-CURSTATE = dict(paddleX=1, ballX=1, ballV=1, move=2)
+CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
 UPDATECOUNT = 0
 WRITECOUNT = 0
-PERIOD = 100000
+PERIOD = 1000000
 HITCOUNT=0
-GAMECOUNT=0
+GAMECOUNT=1
 #Tweakable parameters
 #table
 AVERAGESFILE = 'average_hits'
-TABLEFILE = 'table'
+TABLEFILE = 'large_table'
 NUMACTIONS = 3
 MAXPADDLEX = 24 #0-24
 MAXBALLX = 30   #0-30
 MAXBALLV = 6
+MAXBALLY = 26
 #velocity mappings
 UPLEFT = 5
 UP = 4
@@ -54,9 +55,10 @@ def create_table(filename):
     global MAXPADDLEX
     global MAXBALLX
     global MAXBALLV
+    global MAXBALLY
 
     #+1 for zero indexing
-    table = np.ones(shape=(NUMACTIONS, MAXPADDLEX+1, MAXBALLX+1, MAXBALLV)) * DEFAULTREWARD
+    table = np.ones(shape=(NUMACTIONS, MAXPADDLEX+1, MAXBALLX+1, MAXBALLY+1, MAXBALLV)) * DEFAULTREWARD
     f = open(filename, 'w')
     pickle.dump(table, f);
     f.close()
@@ -79,16 +81,18 @@ def indexTable(state, action):
    paddleX = state['paddleX']
    ballX = state['ballX']
    ballV = state['ballV']
+   ballY = state['ballY']
    #-1 for zero indexing?
-   return QTABLE[action, paddleX-1, ballX-1, ballV]
+   return QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV]
 
 def updateTable(state, action, value):
     global QTABLE
     paddleX = state['paddleX']
     ballX = state['ballX']
     ballV = state['ballV']
+    ballY = state['ballY']
     #-1 for zero indexing
-    QTABLE[action, paddleX-1, ballX-1, ballV] = value
+    QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
     #print id(QTABLE)
     return
 
@@ -198,6 +202,8 @@ def get_move():
     CURSTATE['paddleX'] = int(request.values["paddleX"])
     CURSTATE['ballX'] = int(request.values["ballX"])
     CURSTATE['ballV'] = int(request.values["ballV"])
+    CURSTATE['ballY'] = int(request.values["ballY"])
+
 
     #Update last state
     ballV = CURSTATE['ballV']
@@ -208,8 +214,8 @@ def get_move():
     elif (message == 'lose'):
         #Ball and paddle on same plane, just lost
         reward = BADREWARD
-        GAMECOUNT +=1
-	print 'LOSE!!!!!!!!!!!!!!\n'
+        print 'LOSE!!!!\n'
+        GAMECOUNT+=1
     elif (message == 'win'):
         reward = WINREWARD
     elif (message == 'move'):
@@ -218,14 +224,15 @@ def get_move():
     updateQ(LASTSTATE, stateMaxQ, reward);
 
     #Periodically, write to new table
+    #print UPDATECOUNT
     if UPDATECOUNT > PERIOD:
-        filename = "table_" +  str(WRITECOUNT)
+        UPDATECOUNT = 0
+        filename = "tables/table_" +  str(WRITECOUNT)
         serialize(filename)
         WRITECOUNT+=1
-    	avgHits = float(HITCOUNT/GAMECOUNT)
-        UPDATECOUNT = 0
+        avgHits = float(HITCOUNT/GAMECOUNT)
         HITCOUNT = 0
-        GAMECOUNT = 0
+        GAMECOUNT = 1
         f = open(AVERAGESFILE, "a")
         s = str(WRITECOUNT*PERIOD) + ' ' + str(avgHits) + '\n'
         f.write(s)
@@ -242,11 +249,13 @@ def get_move():
     else:
         return "left"
 
-@app.route('/serialize/<filename>')
+
+
+#@app.route('/serialize/<filename>')
 def serialize(filename):
     #Writes qtable to filename
     global QTABLE
-    frame = sys._getframe(0)
+    #frame = sys._getframe(0)
     print id(QTABLE)
     f = open(filename, 'w')
     pickle.dump(QTABLE, f)
@@ -263,7 +272,7 @@ def update_table():
     tableStr = np.array_str(QTABLE)
     return tableStr
 
-@app.route('/dispq/<paddleX>/<ballX>/<ballV>')
+@app.route('/dispq/<paddleX>/<ballX>/<ballY>/<ballV>')
 def dispq(paddleX, ballX, ballV):
     #Displays q values given a state
     global QTABLE
@@ -271,10 +280,11 @@ def dispq(paddleX, ballX, ballV):
     tmp['paddleX'] = int(paddleX)
     tmp['ballX'] = int(ballX)
     tmp['ballV'] = int(ballV)
+    tmp['ballY'] = int(ballY)
     leftVal = indexTable(tmp, 0)
     rightVal = indexTable(tmp, 1)
     stayVal = indexTable(tmp, 2)
-    statestr = str(paddleX) + ' ' + str(ballX) + ' ' + + str(ballV)
+    statestr = str(paddleX) + ' ' + str(ballX) + ' ' + str(ballY) + ' '+ str(ballV)
     qstr = str(leftVal) + ' ' + str(rightVal) + ' ' + str(stayVal)
     return "state: " + statestr + '\n' + "q vals: " + qstr
 
@@ -300,10 +310,11 @@ def disp(obj):
         paddleX = state['paddleX']
         ballX = state['ballX']
         ballV = state['ballV']
+        ballY = state['ballY']
         leftVal = indexTable(LASTSTATE, 0)
         rightVal = indexTable(LASTSTATE, 1)
         stayVal = indexTable(LASTSTATE, 2)
-        statestr = str(paddleX) + ' ' + str(ballX) + ' ' + str(ballV)
+        statestr = str(paddleX) + ' ' + str(ballX) + ' ' + str(ballY) + ' '+ str(ballV)
         qstr = str(leftVal) + ' ' + str(rightVal) + ' ' + str(stayVal)
         return "state: " + statestr + '\n' + "q vals: " + qstr
     elif (obj == 'table'):
@@ -316,4 +327,4 @@ def disp(obj):
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     #app.debug = True
-    app.run()
+    app.run('127.0.0.1',5000)
