@@ -6,25 +6,34 @@ import signal
 import sys
 import random
 import gc
+import appconfig
 from math import exp
 from random import randint
 from os import listdir
 from os.path import isfile, join
 from flask import Flask, request
+
 app = Flask(__name__)
+try:
+    configObj = 'appconfig.' + os.environ['APPMODE']
+    app.config.from_object(configObj)
+except:
+    app.config.from_object(appconfig.Config)
+print os.environ['APPMODE']
 
 ### GLOBALS ###
+TESTING = app.testing
 CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
 UPDATECOUNT = 0
 WRITECOUNT = 0
-PERIOD = 1000000
+PERIOD = app.config['PERIOD']
 HITCOUNT=0
 GAMECOUNT=1
 #Tweakable parameters
 #table
-AVERAGESFILE = 'average_hits'
-TABLEFILE = 'large_table'
+AVERAGESFILE = app.config['AVERAGESFILE']
+TABLEFILE = app.config['TABLEFILE']
 NUMACTIONS = 3
 MAXPADDLEX = 24 #0-24
 MAXBALLX = 30   #0-30
@@ -95,6 +104,28 @@ def updateTable(state, action, value):
     QTABLE[action, paddleX-1, ballX-1, ballY-1, ballV] = value
     #print id(QTABLE)
     return
+
+def maxMove(state):
+    leftVal = indexTable(state, 0)
+    rightVal = indexTable(state, 1)
+    stayVal = indexTable(state, 2)
+    choice = max(leftVal, rightVal, stayVal)
+    if (leftVal == rightVal) and (rightVal == stayVal):
+        return random.choice([0,1,2])
+    if (rightVal == choice):
+        if (rightVal == leftVal):
+            return random.choice([0,1])
+        elif (rightVal == stayVal):
+            return random.choice([1,2])
+        else:
+            return 1
+    elif (leftVal == choice):
+        if (leftVal == stayVal):
+            return random.choice([0,2])
+        else:
+            return 0
+    else:
+        return 2
 
 def eGreedy(state):
     leftVal = indexTable(state, 0)
@@ -194,6 +225,8 @@ def get_move():
     global HITCOUNT
     global GAMECOUNT
     global AVERAGESFILE
+    global TESTING
+    global TABLEDIR
 
     #Get current state
     LASTSTATE = CURSTATE.copy()
@@ -227,7 +260,7 @@ def get_move():
     #print UPDATECOUNT
     if UPDATECOUNT > PERIOD:
         UPDATECOUNT = 0
-        filename = "tables/table_" +  str(WRITECOUNT)
+        filename = TABLEDIR + '/' + str(WRITECOUNT)
         serialize(filename)
         WRITECOUNT+=1
         avgHits = float(HITCOUNT/GAMECOUNT)
@@ -239,7 +272,10 @@ def get_move():
         f.close()
 
     #Get move for current state
-    move = eGreedy(CURSTATE)
+    if (TESTING):
+        move = maxMove(CURSTATE)
+    else:
+        move = eGreedy(CURSTATE)
     CURSTATE['move'] = move
     UPDATECOUNT+=1
     if (move == 1):
@@ -293,6 +329,8 @@ def disp(obj):
     global QTABLE
     global LASTSTATE
     global CURSTATE
+    if (obj == 'config'):
+        return
     if (obj == 'curstate'):
         state = CURSTATE
         paddleX = state['paddleX']
@@ -326,5 +364,4 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    #app.debug = True
     app.run('127.0.0.1',5000)
