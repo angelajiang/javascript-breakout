@@ -93,7 +93,7 @@ Breakout = {
         this.paddle  = Object.construct(Breakout.Paddle, this, cfg.paddle);
         this.ball    = Object.construct(Breakout.Ball,   this, cfg.ball);
         this.score   = Object.construct(Breakout.Score,  this, cfg.score);
-        this.bot = Object.construct(Breakout.bot, this, cfg.bot);
+        this.bot = Object.construct(Breakout.bot['control'], this, cfg.bot);
         Game.loadSounds({sounds: cfg.sounds});
     },
 

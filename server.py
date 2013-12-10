@@ -5,7 +5,6 @@ import cPickle as pickle
 import signal
 import sys
 import random
-import gc
 import appconfig
 from math import exp
 from random import randint

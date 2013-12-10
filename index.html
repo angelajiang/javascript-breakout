@@ -9,8 +9,13 @@
  
 <body> 
 
-  Speed:<input type="number" id="slidernumber" value=30>
-  Draw Frame:<input type="number" id="frame_rate" value=1>
+  Speed:<input type="number" id="slidernumber" value=30><br/>
+  Draw Frame:<input type="number" id="frame_rate" value=1><br/>
+
+  Bot: <input type="radio" name="botname" value="control">
+         Hand-written<br/>
+       <input type="radio" name="botname" value="learned">
+         Learner<br/>
   <div id="breakout">
     <canvas id="canvas">
       <div class='unsupported'>
@@ -18,23 +23,20 @@
       </div>
     </canvas>
     <div id="levels">
-      <img id="next" class="disabled" src="images/up.png"   title="next level">
-      <img id="prev" class="disabled" src="images/down.png" title="previous level">
-      <span id="label">level:</span><span id="level"></span>
-    </div>
+      <img id="next" class="disabled" src="images/up.png"   title="next level"> 
+      <img id="prev" class="disabled" src="images/down.png" title="previous level"> 
+      <span id="label">level:</span><span id="level"></span> 
+    </div> 
     <div id="controls">
       <input id='sound' type='checkbox' />
       <label for='sound'>sound</label>
     </div>
     <div id="instructions" style='display:none;'>
       <div class='keyboard'>
-        <b>space</b> to start<br>
-        <b>left/right</b> to move paddle<br>
-        <b>up/down</b> to change level
+        <b>space</b> to start the simulation<br>
       </div>
       <div class='touch'>
         <b>touch here</b> to start<br>
-        <b>drag</b> paddle to move<br>
       </div>
     </div>
   </div>
@@ -45,10 +47,11 @@
   <script src="breakout.js"></script>
   <script src="levels.js"></script>
   <script type = "text/javascript" src="learner.js"></script>
+  <script type = "text/javascript" src="bot.js"></script>
   <script>
-  Game.ready(function() {
-    var game = Game.start('canvas', Breakout);
-  });
+      Game.ready(function() {
+        var game = Game.start('canvas', Breakout);
+      });
   </script>
 
 </body> 
