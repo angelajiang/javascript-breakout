@@ -22,6 +22,7 @@ body {
 }
 
 #levels {
+   visibility: hidden;
      position: absolute;
          left: 10px;
           top: 10px;
@@ -59,9 +60,10 @@ body {
 #instructions.touch .touch    { display: block; }
 
 #controls {
-  position: absolute;
-    bottom: 0.5em;
-      left: 0.5em;
+  visibility: hidden;
+    position: absolute;
+      bottom: 0.5em;
+        left: 0.5em;
 }
 #controls input,
 #controls label { vertical-align: middle; }

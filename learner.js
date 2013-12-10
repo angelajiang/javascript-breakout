@@ -2,7 +2,9 @@
 //	Learning bot
 //===========================
 jQuery(document).ready(jQuery(function($) {
-    Breakout.bot = {
+    Breakout.bot = Breakout.bot || {};
+    
+    Breakout.bot['learner'] = {
         initialize: function(game, cfg) {
             this.game = game;
             this.cfg = cfg;
