@@ -154,7 +154,7 @@ Breakout = {
     reset: function(botName) {
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.paddle.reset();
-//	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);
+	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);
 	this.ongame();
     },
 
