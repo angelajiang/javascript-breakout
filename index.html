@@ -9,8 +9,8 @@
  
 <body> 
 
-  Speed:<input type="number" id="slidernumber" value=30>
-  Draw Frame:<input type="number" id="frame_rate" value=1>
+  Speed:<input type="range" id="slidernumber" min="1" max="100" step=1 value=30>
+  Draw Frame:<input type="range" id="frame_rate" min="1" step=1 value=1>
   <div id="breakout">
     <canvas id="canvas">
       <div class='unsupported'>

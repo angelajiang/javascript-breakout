@@ -512,7 +512,6 @@ Game = {
             this.front.height = this.height;
             this.front2d      = this.front.getContext('2d');
             this.dt = .005*2/3;
-            //this.slider = 1;
             this.addEvents();
             this.resetStats();
             this.resize();
@@ -537,17 +536,10 @@ Game = {
 
         loop: function() {
 	    this.counter += 1;
-            var slidernumber = document.getElementById("slidernumber").value;
-            var skip_frame = Math.round(document.getElementById("frame_rate").value);
-            if(slidernumber > 100)
-                slidernumber = 100;
-            else if(slidernumber<0)
-                slidernumber = 0;
-            if(skip_frame<1)
-                skip_frame = 1;
-	    //this.slider = ;
-            this._start  = Game.timestamp(); this.update(this.dt *slidernumber/100/** this.slider*/); // send dt as seconds
-            this._middle = Game.timestamp(); if(this.counter%skip_frame===0)this.draw();
+            this.slidernumber = document.getElementById("slidernumber").value;
+            this.skip_frame = Math.round(document.getElementById("frame_rate").value);
+            this._start  = Game.timestamp(); this.update(this.dt *this.slidernumber/100); // send dt as seconds
+            this._middle = Game.timestamp(); if(this.counter%this.skip_frame===0)this.draw();
             this._end    = Game.timestamp();
             this.updateStats(this._middle - this._start, this._end - this._middle);
             this.lastFrame = this._start;
@@ -602,6 +594,8 @@ Game = {
                 ctx.fillText(this.strings.update + Math.round(this.stats.update) + this.strings.ms, this.width - 100, this.height - 40);
                 ctx.fillText(this.strings.draw   + Math.round(this.stats.draw)   + this.strings.ms, this.width - 100, this.height - 30);
             }
+            ctx.fillText("Game Speed:" + this.slidernumber + "%", 90, this.height - 55);
+            ctx.fillText("Drawing every " + this.skip_frame + " frames", 90, this.height - 45);
         },
 
         addEvents: function() {
