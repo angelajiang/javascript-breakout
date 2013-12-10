@@ -2,6 +2,7 @@
 //	Handmade Bot
 //===========================
 jQuery(document).ready(jQuery(function($) {
+    
     Breakout.bot = Breakout.bot || {};
     Breakout.bot['control'] = {
 	initialize: function(game, cfg) {
@@ -9,7 +10,7 @@ jQuery(document).ready(jQuery(function($) {
 	    this.cfg  = cfg;
 	},
 	
-	update:function(){
+	update: function(){
 	    var paddleX = this.game.paddle.getX();
 	    var ballX = this.game.ball.getX();
             var ballY = this.game.ball.getY();

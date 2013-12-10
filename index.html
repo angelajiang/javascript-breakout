@@ -12,10 +12,17 @@
   Speed:<input type="range" id="slidernumber" min="1" max="100" step=1 value=30><br/>
   Draw Frame:<input type="range" id="frame_rate" min="1" step=1 value=1><br/>
 
-  Bot: <input type="radio" name="botname" value="control" checked=true>
+  Bot:<br/>
+       <input type="radio" class="botname" name="botname" value="control">
          Hand-written<br/>
-       <input type="radio" name="botname" value="learned">
-         Learner<br/>
+       <input type="radio" class="botname" name="botname" value="init-learned" checked=true>
+         Initial Learner<br/>
+       <input type="radio" class="botname" name="botname" value="short-learned">
+         Learner after 100 moves<br/>
+       <input type="radio" class="botname" name="botname" value="medium-learned">
+         Learner after 10000 moves<br/>
+       <input type="radio" class="botname" name="botname" value="long-learned">
+         Learner after a lot of moves...<br/>
   <div id="breakout">
     <canvas id="canvas">
       <div class='unsupported'>
@@ -48,10 +55,12 @@
   <script src="levels.js"></script>
   <script type = "text/javascript" src="learner.js"></script>
   <script type = "text/javascript" src="bot.js"></script>
+  <script type = "text/javascript" src="change-bot.js"></script>
   <script>
-      Game.ready(function() {
-        var game = Game.start('canvas', Breakout);
-      });
+    var game;
+    Game.ready(function() {
+      game = Game.start('canvas', Breakout);
+    });
   </script>
 
 </body> 

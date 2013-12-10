@@ -151,6 +151,13 @@ Breakout = {
         this.refreshDOM();
     },
 
+    reset: function(botName) {
+        this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
+        this.paddle.reset();
+	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);
+	this.ongame();
+    },
+
     ongame: function() {
         this.refreshDOM();
         this.score.reset();
@@ -739,7 +746,7 @@ Breakout = {
         getX: function(){return Math.round((this.x-this.game.court.left)/this.game.court.chunk)},
         getY: function(){return Math.round((this.y-this.game.court.top)/this.game.court.chunk)}
 
-    }
+    },
 
     //=============================================================================
 
