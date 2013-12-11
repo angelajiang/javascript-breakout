@@ -190,7 +190,7 @@ Breakout = {
         else {
             this.ball.reset({launch: true});
         }
-
+        this.score.death++;
         this.bot.loseBall();
     },
 
@@ -201,7 +201,7 @@ Breakout = {
         this.ball.reset({launch: true});
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
-
+        this.score.winning++;
         console.log("winLevel");
         this.bot.winLevel();
 
@@ -211,6 +211,7 @@ Breakout = {
         this.playSound('brick');
         this.court.remove(brick);
         this.score.increase(brick.score);
+        this.score.brickhit++;
         this.ball.speed += 10 * (1 - (this.ball.speed / this.ball.maxspeed)); // decay curve - speed increases less the faster the ball is (otherwise game becomes impossible)
         if (this.court.empty())
             this.winLevel();
@@ -265,6 +266,10 @@ Breakout = {
         initialize: function(game, cfg) {
             this.game = game;
             this.cfg  = cfg;
+            this.paddlehit = 0;
+            this.death = 0;
+            this.brickhit = 0;
+            this.winning = 0;
             this.load();
             this.reset();
         },
@@ -327,7 +332,7 @@ Breakout = {
             ctx.font      = this.highfont;
             width         = ctx.measureText(text).width;
             ctx.fillText(text, this.width - width, this.height/2);
-
+            
             paddle = {
                 game: this.game,
                 w:    this.game.court.chunk * 1.5,
@@ -594,6 +599,7 @@ Breakout = {
                 if ((closest.item == this.game.paddle) && (closest.point.d == 'top')) {
                     p2.dx = this.speed * (closest.point.x - (this.game.paddle.left + this.game.paddle.w/2)) / (this.game.paddle.w/2);
                     this.game.bot.hit();
+                    this.game.score.paddlehit++;
                 }
 
                 this.setpos(closest.point.x, closest.point.y);

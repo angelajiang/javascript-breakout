@@ -594,8 +594,15 @@ Game = {
                 ctx.fillText(this.strings.update + Math.round(this.stats.update) + this.strings.ms, this.width - 100, this.height - 40);
                 ctx.fillText(this.strings.draw   + Math.round(this.stats.draw)   + this.strings.ms, this.width - 100, this.height - 30);
             }
+            ctx.font = "9pt arial";
             ctx.fillText("Game Speed:" + this.slidernumber + "%", 90, this.height - 55);
             ctx.fillText("Drawing every " + this.skip_frame + " frames", 90, this.height - 45);
+            var font  = 18 + "pt arial";
+            ctx.font = font;
+            ctx.fillText("Paddle Hit:" + this.game.score.paddlehit,0,50);
+            ctx.fillText("Death:" + this.game.score.death,0,68);
+            ctx.fillText("Brick Hit:" + this.game.score.brickhit,0,86);
+            ctx.fillText("Levels Won:" + this.game.score.winning,0,104);
         },
 
         addEvents: function() {
