@@ -60,6 +60,10 @@ jQuery(document).ready(jQuery(function($) {
 		var ballV = this.game.ball.getVelocity();
 		var gameObj = this.game;
 
+                if (ballX < 0 || ballY < 0 || ballV < 0) {
+                    return
+                }
+                
 		var leftVal  = this.indexTable(paddleX, ballX, ballY, ballV, 0);
 		var rightVal = this.indexTable(paddleX, ballX, ballY, ballV, 1);
 		var stayVal  = this.indexTable(paddleX, ballX, ballY, ballV, 2);
@@ -82,14 +86,7 @@ jQuery(document).ready(jQuery(function($) {
 
 
 	    indexTable: function(paddleX, ballX, ballY, ballV, action) {
-		// console.log('paddleX: ' + paddleX);
-		// console.log('ballX: ' + ballX);
-		// console.log('ballY: ' + ballY);
-		// console.log('ballV: ' + ballV);
-		// console.log('action ' + action);
-		// console.log('table: ' + table);
-		
-		return table[action][paddleX - 1][ballX - 1][ballY - 1][ballV];
+		return table[action][paddleX][ballX][ballY][ballV];
 	    }
 	}
     };

@@ -291,8 +291,8 @@ Breakout = {
             this.top    = this.game.court.top - this.game.court.wall.size*2;
             this.width  = this.game.court.width;
             this.height = this.game.court.wall.size*2;
-            this.scorefont = "bold " + Math.max(9, this.game.court.wall.size - 2) + "pt arial";
-            this.highfont  = ""      + Math.max(9, this.game.court.wall.size - 8) + "pt arial";
+            this.scorefont = "bold " + Math.max(9, this.game.court.wall.size - 10) + "pt arial";
+            this.highfont  = ""      + Math.max(9, this.game.court.wall.size - 12) + "pt arial";
             ctx.save();
             ctx.font = this.scorefont;
             this.scorewidth = ctx.measureText(this.format(0)).width;
@@ -332,10 +332,11 @@ Breakout = {
                 h:    this.game.court.chunk * 2/3
             }
             ctx.translate(this.scorewidth + 20, (this.height-paddle.h) / 2);
-            for(var n = 0 ; n < this.lives ; n++) {
+/*            for(var n = 0 ; n < this.lives ; n++) {
                 this.game.paddle.render.call(paddle, ctx);
                 ctx.translate(paddle.w + 5, 0);
             }
+*/
 
         }
 
