@@ -193,7 +193,7 @@ Breakout = {
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
         this.score.winning++;
-        console.log("winLevel");
+        // console.log("winLevel");
         this.bot.winLevel();
 
     },
@@ -381,7 +381,7 @@ Breakout = {
 
             this.wall = {}
             this.wall.size  = this.chunk;
-            console.log("console size" + this.chunk);
+            // console.log("console size" + this.chunk);
             this.wall.top   = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.width + this.wall.size*2, h: this.wall.size*2               });
             this.wall.left  = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
             this.wall.right = Game.Math.bound({x: this.right,                 y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
