@@ -154,6 +154,10 @@ Breakout = {
     },
 
     reset: function(botName) {
+        this.score.paddlehit = 0;
+        this.score.death = 0;
+        this.score.brickhit = 0;
+        this.score.winning = 0;
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.paddle.reset();
 	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);
