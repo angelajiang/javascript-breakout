@@ -25,7 +25,7 @@ TESTING = app.testing
 CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
 UPDATECOUNT = 0
-WRITECOUNT = 0
+WRITECOUNT = app.config['WRITECOUNT']
 PERIOD = app.config['PERIOD']
 HITCOUNT=0
 GAMECOUNT=1
