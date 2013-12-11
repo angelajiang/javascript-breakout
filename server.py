@@ -83,7 +83,6 @@ while (QTABLE == None):
     except:
         create_table(TABLEFILE)
 
-print id(QTABLE)
 ### MODULES ###
 def indexTable(state, action):
    global QTABLE
