@@ -59,15 +59,6 @@ body {
 #instructions.touch .keyboard { display: none;  }
 #instructions.touch .touch    { display: block; }
 
-#controls {
-  visibility: hidden;
-    position: absolute;
-      bottom: 0.5em;
-        left: 0.5em;
-}
-#controls input,
-#controls label { vertical-align: middle; }
-
 /********************************/
 /* re-usable class-based styles */
 /********************************/

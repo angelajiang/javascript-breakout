@@ -290,34 +290,6 @@ Game = {
         }
     },
 
-    loadSounds: function(cfg) {
-        cfg = cfg || {};
-        if (typeof soundManager == 'undefined') {
-            var path = cfg.path || 'sound/soundmanager2-nodebug-jsmin.js';
-            var swf  = cfg.swf  || 'sound/swf';
-            window.SM2_DEFER = true;
-            Game.loadScript(path, function() {
-                window.soundManager = new SoundManager();
-                soundManager.useHighPerformance = true;
-                soundManager.useFastPolling = true;
-                soundManager.url = swf;
-                soundManager.defaultOptions.volume = 50; // shhh!
-                soundManager.onready(function() {
-                    Game.loadSounds(cfg);
-                });
-                soundManager.beginDelayedInit();
-            });
-        }
-        else {
-            var sounds = [];
-            for(var id in cfg.sounds) {
-                sounds.push(soundManager.createSound({id: id, url: cfg.sounds[id]}));
-            }
-            if (cfg.onload)
-                cfg.onload(sounds);
-        }
-    },
-
     random: function(min, max) {
         return (min + (Math.random() * (max - min)));
     },

@@ -68,15 +68,6 @@ Breakout = {
             { key:  Game.KEY.DOWN,                     state: 'menu', action: function() { this.prevLevel();                } }
         ],
 
-        sounds: {
-            brick:    '/sound/breakout/brick.mp3',
-            paddle:   '/sound/breakout/paddle.mp3',
-            go:       '/sound/breakout/go.mp3',
-            levelup:  '/sound/breakout/levelup.mp3',
-            loselife: '/sound/breakout/loselife.mp3',
-            gameover: '/sound/breakout/gameover.mp3'
-        }
-
     },
 
     //-----------------------------------------------------------------------------
@@ -88,7 +79,6 @@ Breakout = {
         this.height  = runner.height;
         this.storage = runner.storage();
         this.color   = cfg.color;
-        this.sound   = (this.storage.sound == "true");
         this.court   = Object.construct(Breakout.Court,  this, cfg.court);
         this.paddle  = Object.construct(Breakout.Paddle, this, cfg.paddle);
         this.ball    = Object.construct(Breakout.Ball,   this, cfg.ball);
@@ -96,7 +86,6 @@ Breakout = {
         var init_bot = Breakout.init_botname;
         
         this.bot = Object.construct(Breakout.bot[init_bot], this, cfg.bot);
-        Game.loadSounds({sounds: cfg.sounds});
     },
 
     onstartup: function() { // the event that fires the initial state transition occurs when Game.Runner constructs our StateMachine
@@ -107,15 +96,10 @@ Breakout = {
     addEvents: function() {
         Game.addEvent('prev',  'click',  this.prevLevel.bind(this, false));
         Game.addEvent('next',  'click',  this.nextLevel.bind(this, false));
-        Game.addEvent('sound', 'change', this.toggleSound.bind(this, false));
 
         Game.addEvent('instructions',     'touchstart', this.play.bind(this));
         Game.addEvent(this.runner.canvas, 'touchmove',  this.ontouchmove.bind(this));
         Game.addEvent(document.body,      'touchmove',  function(event) { event.preventDefault(); }); // prevent ipad bouncing up and down when finger scrolled
-    },
-
-    toggleSound: function() {
-        this.storage.sound = this.sound = !this.sound;
     },
 
     update: function(dt) {
@@ -203,7 +187,6 @@ Breakout = {
     },
 
     winLevel: function() {
-        this.playSound('levelup');
         this.score.gainLife();
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.ball.reset({launch: true});
@@ -216,7 +199,6 @@ Breakout = {
     },
 
     hitBrick: function(brick) {
-        this.playSound('brick');
         this.court.remove(brick);
         this.score.increase(brick.score);
         this.score.brickhit++;
@@ -252,13 +234,6 @@ Breakout = {
         $('prev').toggleClassName('disabled', !this.canPrevLevel());
         $('next').toggleClassName('disabled', !this.canNextLevel());
         $('level').update(this.level + 1);
-        $('sound').checked = this.sound;
-    },
-
-    playSound: function(id) {
-        if (soundManager && this.sound) {
-            soundManager.play(id);
-        }
     },
 
     ontouchmove: function(ev) {
