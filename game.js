@@ -101,6 +101,7 @@ Element = function() {
     var get = function(ele) {
         if (typeof ele == 'string')
             ele = document.getElementById(ele);
+	console.trace();
         if (!ele._extended)
             Object.extend(ele, instance);
         return ele;

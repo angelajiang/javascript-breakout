@@ -30,8 +30,6 @@ body {
   line-height: 20px;
 }
 
-#levels #next  { position: absolute;            }
-#levels #prev  { position: absolute; top: 14px; }
 #levels #label { padding-left: 20px; }
 #levels #level { font-size: 14pt; padding-left: 5px; font-weight: bold; color: black; }
 

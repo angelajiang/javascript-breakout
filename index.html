@@ -15,8 +15,6 @@
   Bot:<br/>
        <input type="radio" class="botname" name="botname" value="control">
          Hand-written<br/>
-       <input type="radio" class="botname" name="botname" value="learner">
-         Live learner<br/>
        <input type="radio" class="botname" name="botname" value="init_learned">
          Initial Learner<br/>
        <input type="radio" class="botname" name="botname" value="short_learned">
@@ -33,8 +31,6 @@
       </div>
     </canvas>
     <div id="levels">
-      <img id="next" class="disabled" src="images/up.png"   title="next level"> 
-      <img id="prev" class="disabled" src="images/down.png" title="previous level"> 
       <span id="label">level:</span><span id="level"></span> 
     </div> 
     <div id="instructions" style='display:none;'>
@@ -45,6 +41,7 @@
         <b>touch here</b> to start<br>
       </div>
     </div>
+
   </div>
 
 
@@ -59,7 +56,6 @@
   <script type = "text/javascript" src="long_table.js"></script>
   
   <script type = "text/javascript" src="learned-bot.js"></script>
-  <script type = "text/javascript" src="learner.js"></script>
   <script type = "text/javascript" src="bot.js"></script>
   <script type = "text/javascript" src="change-bot.js"></script>
   <script>

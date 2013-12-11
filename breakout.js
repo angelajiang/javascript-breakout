@@ -57,15 +57,10 @@ Breakout = {
             ]},
 
         keys: [
-            { keys: [Game.KEY.LEFT,  Game.KEY.A],      mode: 'down',  action: function() { this.paddle.moveLeft();          } },
-            { keys: [Game.KEY.RIGHT, Game.KEY.D],      mode: 'down',  action: function() { this.paddle.moveRight();         } },
-            { keys: [Game.KEY.LEFT,  Game.KEY.A],                     action: function() { this.paddle.stopMovingLeft();    } },
-            { keys: [Game.KEY.RIGHT, Game.KEY.D],                     action: function() { this.paddle.stopMovingRight();   } },
             { keys: [Game.KEY.SPACE, Game.KEY.RETURN], state: 'menu', action: function() { this.play();                     } },
             { keys: [Game.KEY.SPACE, Game.KEY.RETURN], state: 'game', action: function() { this.ball.launchNow();           } },
             { key:  Game.KEY.ESC,                      state: 'game', action: function() { this.abandon();                  } },
-            { key:  Game.KEY.UP,                       state: 'menu', action: function() { this.nextLevel();                } },
-            { key:  Game.KEY.DOWN,                     state: 'menu', action: function() { this.prevLevel();                } }
+
         ],
 
     },
@@ -94,8 +89,6 @@ Breakout = {
     },
 
     addEvents: function() {
-        Game.addEvent('prev',  'click',  this.prevLevel.bind(this, false));
-        Game.addEvent('next',  'click',  this.nextLevel.bind(this, false));
 
         Game.addEvent('instructions',     'touchstart', this.play.bind(this));
         Game.addEvent(this.runner.canvas, 'touchmove',  this.ontouchmove.bind(this));
@@ -231,8 +224,8 @@ Breakout = {
     refreshDOM: function() {
         $('instructions').className = Game.ua.hasTouch ? 'touch' : 'keyboard';
         $('instructions').showIf(this.is('menu'));
-        $('prev').toggleClassName('disabled', !this.canPrevLevel());
-        $('next').toggleClassName('disabled', !this.canNextLevel());
+        // $('prev').toggleClassName('disabled', !this.canPrevLevel());
+        // $('next').toggleClassName('disabled', !this.canNextLevel());
         $('level').update(this.level + 1);
     },
 
