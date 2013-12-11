@@ -93,7 +93,7 @@ Breakout = {
         this.paddle  = Object.construct(Breakout.Paddle, this, cfg.paddle);
         this.ball    = Object.construct(Breakout.Ball,   this, cfg.ball);
         this.score   = Object.construct(Breakout.Score,  this, cfg.score);
-        var init_bot = init_bot || 'long_learned';
+        var init_bot = Breakout.init_botname;
         
         this.bot = Object.construct(Breakout.bot[init_bot], this, cfg.bot);
         Game.loadSounds({sounds: cfg.sounds});
@@ -158,6 +158,7 @@ Breakout = {
         this.score.death = 0;
         this.score.brickhit = 0;
         this.score.winning = 0;
+	this.score.highscore = 0;
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.paddle.reset();
 	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);

@@ -67,12 +67,12 @@
   <script type = "text/javascript" src="bot.js"></script>
   <script type = "text/javascript" src="change-bot.js"></script>
   <script>
-    var init_bot;
     var game;
-    
     Game.ready(function() {
+      Breakout.init_botname = jQuery('input:radio[name=botname]:checked').val();
       game = Game.start('canvas', Breakout);
     });
+    
   </script>
 
 </body> 
