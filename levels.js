@@ -46,7 +46,7 @@ Breakout.Colors = {
 
 };
 
-Breakout.Levels = [
+/*Breakout.Levels = [
 
     { colors: Breakout.Colors.pastel,
       bricks: [
@@ -321,6 +321,56 @@ Breakout.Levels = [
 
 
 
-];
+];*/
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLabcdefghijkl";
 
+    for( var i=0; i < 10; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    var space = 0;
+    var text2 = "";
+    for( var i=0; i < 15; i++){
+        if(Math.random() > .8 && space < 5){
+            space++;
+            text2 += " ";
+	    console.log(i);
+        }
+        else{
+            text2 += text.charAt(i-space);
+	}
+    }
+    return text2;
+};
 
+function makeLevel()
+{
+   var lvl = {colors:{
+        a: "#EFD279", // yellow
+        b: "#95CBE9", // light blue
+        c: "#024769", // dark blue
+        d: "#AFD775", // light green
+        e: "#2C5700", // grass
+        f: "#DE9D7F", // red
+        g: "#7F9DDE", // purple
+        h: "#00572C", // dark green
+        i: "#75D7AF", // mint
+        j: "#694702", // brown
+        k: "#E9CB95", // peach
+        l: "#79D2EF"  // blue
+    },
+    bricks: new Array(),
+   };
+   
+   for(var i = 0; i<10; i++)
+      if(Math.random() > 0.2)
+          lvl.bricks[i] = makeid();
+      else
+          lvl.bricks[i] = "";
+
+   return lvl;
+};
+Breakout.Levels = new Array(15);
+for(var i =0; i<15; i++)
+    Breakout.Levels[i] = makeLevel();
