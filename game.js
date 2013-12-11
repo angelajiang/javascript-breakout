@@ -599,9 +599,9 @@ Game = {
             ctx.fillText("Drawing every " + this.skip_frame + " frames", 90, this.height - 45);
             var font  = 18 + "pt arial";
             ctx.font = font;
-            ctx.fillText("Paddle Hit:" + this.game.score.paddlehit,0,50);
-            ctx.fillText("Death:" + this.game.score.death,0,68);
-            ctx.fillText("Brick Hit:" + this.game.score.brickhit,0,86);
+            ctx.fillText("Paddle Hits:" + this.game.score.paddlehit,0,50);
+            ctx.fillText("Brick Hits:" + this.game.score.brickhit,0,86);
+            ctx.fillText("Deaths:" + this.game.score.death,0,68);
             ctx.fillText("Levels Won:" + this.game.score.winning,0,104);
         },
 
