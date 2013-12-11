@@ -82,14 +82,7 @@ jQuery(document).ready(jQuery(function($) {
 
 
 	    indexTable: function(paddleX, ballX, ballY, ballV, action) {
-		// console.log('paddleX: ' + paddleX);
-		// console.log('ballX: ' + ballX);
-		// console.log('ballY: ' + ballY);
-		// console.log('ballV: ' + ballV);
-		// console.log('action ' + action);
-		// console.log('table: ' + table);
-		
-		return table[action][paddleX - 1][ballX - 1][ballY - 1][ballV];
+		return table[action][paddleX][ballX][ballY][ballV];
 	    }
 	}
     };
