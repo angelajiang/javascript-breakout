@@ -600,8 +600,8 @@ Game = {
             var font  = 18 + "pt arial";
             ctx.font = font;
             ctx.fillText("Paddle Hits:" + this.game.score.paddlehit,0,50);
-            ctx.fillText("Brick Hits:" + this.game.score.brickhit,0,86);
-            ctx.fillText("Deaths:" + this.game.score.death,0,68);
+            ctx.fillText("Brick Hits:" + this.game.score.brickhit,0,68);
+            ctx.fillText("Deaths:" + this.game.score.death,0,86);
             ctx.fillText("Levels Won:" + this.game.score.winning,0,104);
         },
 
