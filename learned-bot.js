@@ -92,5 +92,8 @@ jQuery(document).ready(jQuery(function($) {
     };
 
     Breakout.bot = Breakout.bot || {};
-    Breakout.bot['init-learned'] = learnedBotMaker(short_table);
+    Breakout.bot['init_learned'] = learnedBotMaker(init_table);
+    Breakout.bot['short_learned'] = learnedBotMaker(short_table);
+    Breakout.bot['medium_learned'] = learnedBotMaker(medium_table);
+    Breakout.bot['long_learned'] = learnedBotMaker(long_table);
 }));

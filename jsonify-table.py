@@ -4,17 +4,20 @@ import cPickle as pickle
 import sys
 
 def main():
-    if len(sys.argv) != 2:
-        print sys.argv
-        print 'wrong way!'
+    if len(sys.argv) != 3:
+        print 'Usage: jsonify [table file] [output table name]'
         sys.exit(1)
 
-    f = open(sys.argv[1], 'r')
+    inF = sys.argv[1]
+    outTable = sys.argv[2]    
+    f = open(inF, 'r')
     table = pickle.load(f)
-
-    out = json.dumps(table.tolist())
-
-    print out
+    f.close()
+    
+    out = 'var ' + outTable + ' = ' + json.dumps(table.tolist()) + ';'
+    outFname = outTable + '.js'
+    outF = open(outFname, 'w')
+    outF.write(out)
 
 if __name__ == '__main__':
     main()
