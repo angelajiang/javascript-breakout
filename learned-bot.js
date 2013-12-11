@@ -60,6 +60,10 @@ jQuery(document).ready(jQuery(function($) {
 		var ballV = this.game.ball.getVelocity();
 		var gameObj = this.game;
 
+                if (ballX < 0 || ballY < 0 || ballV < 0) {
+                    return
+                }
+                
 		var leftVal  = this.indexTable(paddleX, ballX, ballY, ballV, 0);
 		var rightVal = this.indexTable(paddleX, ballX, ballY, ballV, 1);
 		var stayVal  = this.indexTable(paddleX, ballX, ballY, ballV, 2);
