@@ -18,7 +18,7 @@ try:
     app.config.from_object(configObj)
 except:
     app.config.from_object(appconfig.Config)
-print os.environ['APPMODE']
+# print os.environ['APPMODE']
 
 ### GLOBALS ###
 TESTING = app.testing

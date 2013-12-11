@@ -8,15 +8,8 @@ jQuery(document).ready(jQuery(function($) {
         initialize: function(game, cfg) {
             this.game = game;
             this.cfg = cfg;
-            this.minballX = 15;
-            this.maxballX = 15;
-            this.minballY = 15;
-            this.maxballY = 15;
-            this.minpaddleX = 5;
-            this.maxpaddleX = 5;
             this.lastHit = false;
         },
-
 
         hit: function() {
             this.lastHit = true;

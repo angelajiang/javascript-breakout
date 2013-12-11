@@ -2,7 +2,6 @@
 //	Handmade Bot
 //===========================
 jQuery(document).ready(jQuery(function($) {
-    
     Breakout.bot = Breakout.bot || {};
     Breakout.bot['control'] = {
 	initialize: function(game, cfg) {
