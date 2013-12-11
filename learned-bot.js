@@ -2,6 +2,11 @@
 //	Learned bot
 //===========================
 jQuery(document).ready(jQuery(function($) {
+    var randomChoice = function(l) {
+	var ind = (Math.floor(Math.random() * l.length));
+	return l[ind];
+    };
+
     var best = function(l, r, s) {
 	if (l > r && l > s) {
 	    return 'left';
@@ -10,13 +15,13 @@ jQuery(document).ready(jQuery(function($) {
 	} else if (s > l && s > r) {
 	    return 'stay';
 	} else if (l === r && r === s) {
-	    return this.randomChoice(['left', 'right','stay']);
+	    return randomChoice(['left', 'right','stay']);
 	} else if (l === r) {
-	    return this.randomChoice(['left', 'right']);
+	    return randomChoice(['left', 'right']);
 	} else if (r === s) {
-	    return this.randomChoice(['right', 'stay']);
+	    return randomChoice(['right', 'stay']);
 	} else {
-	    return this.randomChoice(['left', 'stay']);
+	    return randomChoice(['left', 'stay']);
 	}
     };
     
@@ -59,7 +64,7 @@ jQuery(document).ready(jQuery(function($) {
 		var rightVal = this.indexTable(paddleX, ballX, ballY, ballV, 1);
 		var stayVal  = this.indexTable(paddleX, ballX, ballY, ballV, 2);
 
-		var bestMove = best(leftVal, rightVal, stayVal);
+		var move = best(leftVal, rightVal, stayVal);
 
 		if(move == 'right'){
                     gameObj.paddle.stopMovingLeft();
@@ -75,10 +80,6 @@ jQuery(document).ready(jQuery(function($) {
 		}
 	    },
 
-	    randomChoice: function(l) {
-		var ind = (Math.floor(Math.random() * l.length));
-		return l[ind];
-	    },
 
 	    indexTable: function(paddleX, ballX, ballY, ballV, action) {
 		// console.log('paddleX: ' + paddleX);
