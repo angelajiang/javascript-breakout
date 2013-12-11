@@ -181,6 +181,7 @@ Breakout = {
     loseBall: function() {
 
         if (this.score.loseLife()){
+            this.score.save();
             this.score.reset();
             //this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
             this.paddle.stopMovingLeft();
@@ -191,6 +192,8 @@ Breakout = {
             this.ball.reset({launch: true});
         }
         this.score.death++;
+        this.score.paddlehit = 0;
+        this.score.brickhit = 0;
         this.bot.loseBall();
     },
 
