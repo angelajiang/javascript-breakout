@@ -17,8 +17,8 @@ Breakout = {
         },
 
         court: {
-            xchunks: 30, //30
-            ychunks: 25	 //25
+            xchunks: 15, //30
+            ychunks: 15	 //25
         },
 
         ball: {
