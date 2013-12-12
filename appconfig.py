@@ -5,14 +5,14 @@ class Config(object):
     TABLEFILE = 'tables/current/small_table'
     TABLEDIR = 'tables/train'
     PERIOD = 1000000
-    WRITECOUNT = 111
+    WRITECOUNT = 1050
 
 class TestingConfig(Config):
     TESTING = True
     AVERAGESFILE = 'logs/average_hits_test'
     TABLEFILE = 'tables/current/small_table_test'
     TABLEDIR = 'tables/test'
-    PERIOD = 100000
+    PERIOD = 50000
 
 class DevConfig(Config):
     DEBUG = True
