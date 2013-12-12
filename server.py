@@ -1,4 +1,5 @@
 import flask
+import re
 import time
 import os
 import numpy as np
@@ -13,15 +14,16 @@ from os import listdir
 from os.path import isfile, join
 from flask import Flask, request
 
+####################### INITIALIZE  ###########################
+
 app = Flask(__name__)
 try:
     configObj = 'appconfig.' + os.environ['APPMODE']
     app.config.from_object(configObj)
-except:
-    app.config.from_object(appconfig.Config)
-# print os.environ['APPMODE']
+    print os.environ['APPMODE']
+except: app.config.from_object(appconfig.Config) # print os.environ['APPMODE']
 
-### GLOBALS ###
+#Globals
 TESTING = app.testing
 CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
@@ -50,7 +52,6 @@ UPRIGHT = 3
 DOWNLEFT = 2
 DOWN = 1
 DOWNRIGHT = 0
-
 #algorithm
 DEFAULTREWARD = .1
 ALPHA = 1
@@ -59,7 +60,16 @@ GOODREWARD = 1
 BADREWARD = -1000
 WINREWARD = 10
 
-#create_table must be before QTABLE references it
+#Get tables from directory to test
+if (TESTING):
+    if app.config['GETRESULTS']: 
+        path = app.config['TABLEPATH']
+        TABLES = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        TABLEINDEX = 0
+        TABLEFILE = os.path.join(path, TABLES[TABLEINDEX])
+
+####################### MODULES ###########################
+
 @app.route('/create_table/<filename>')
 def create_table(filename):
     #Creates persistent q-table. Writes table object to filename
@@ -77,17 +87,22 @@ def create_table(filename):
     f.close()
     return "Table stored in filename: " + filename
 
-#q-table
-QTABLE = None
-while (QTABLE == None):
-    try:
-        f = open(TABLEFILE, 'r')
-        QTABLE = pickle.load(f)
-        f.close()
-    except:
-        create_table(TABLEFILE)
+def loadTable():
+    global TABLEFILE
+    global QTABLE
+    QTABLE = None
+    while (QTABLE == None):
+        try:
+            f = open(TABLEFILE, 'r')
+            QTABLE = pickle.load(f)
+            f.close()
+        except:
+            create_table(TABLEFILE)
+    print 'Current table: '+TABLEFILE
 
-### MODULES ###
+#q-table
+loadTable()
+
 def indexTable(state, action):
    global QTABLE
    paddleX = state['paddleX']
@@ -206,7 +221,7 @@ def updateQ(state, stateMaxQ, reward):
     updateTable(state, action, q)
     return
 
-### ROUTABLE MODULES ###
+####################### ROUTABLES  ###########################
 
 @app.route('/')
 @app.route('/<path:filename>')
@@ -225,7 +240,10 @@ def get_move():
     global UPRIGHT
     #Results
     global TESTING
+    global TABLES
+    global TABLEINDEX
     global TABLEDIR
+    global TABLEFILE
     global LOSECOUNT
     global WINCOUNT
     global STARTTIME
@@ -277,8 +295,16 @@ def get_move():
             serialize(filename)
             WRITECOUNT+=1
 
+    #Get move for current state
+    if (TESTING):
+        move = maxMove(CURSTATE)
+    else:
+        move = eGreedy(CURSTATE)
+    CURSTATE['move'] = move
+    UPDATECOUNT+=1
+
+    #Reporting results
     if (GAMECOUNT == SAMPLESIZE and TESTING):
-        print 'In testing'
         if app.config['GETAVERAGES']:
             avgHits = float(HITCOUNT/GAMECOUNT)
             averagesfile = app.config['AVERAGESFILE']
@@ -290,21 +316,29 @@ def get_move():
             elapsedtime = round(time.time() - STARTTIME, 2)
             resultsfile = app.config['RESULTSFILE']
             f = open(resultsfile, "a")
-            s = str(TABLEFILE)+' '+str(HITCOUNT)+' '+str(LOSECOUNT)+' '+str(WINCOUNT)+' '+str(elapsedtime)+'\n'
+            tablename = TABLES[TABLEINDEX]
+            tablenumber = int((re.findall('\d+', tablename))[0])
+            movecount = PERIOD*tablenumber
+            s = str(movecount)+' '+str(HITCOUNT/float(SAMPLESIZE))+' '+str(LOSECOUNT/float(SAMPLESIZE))+' '+str(WINCOUNT/float(SAMPLESIZE))+' '+str(elapsedtime/SAMPLESIZE)+'\n'
             f.write(s)
             f.close()
-            LOSECOUNT = 0
-            HITCOUNT = 0
-            GAMECOUNT = 1
-            STARTTIME = time.time()
 
-    #Get move for current state
-    if (TESTING):
-        move = maxMove(CURSTATE)
-    else:
-        move = eGreedy(CURSTATE)
-    CURSTATE['move'] = move
-    UPDATECOUNT+=1
+            #If we've logged all tables in directory, we're done testing
+            if tablenumber == len(TABLES):
+                TESTING = False
+            else:
+                #Load next table as the q table
+                path = app.config['TABLEPATH']
+                TABLEINDEX += 1
+                TABLEFILE = os.path.join(path, TABLES[TABLEINDEX])
+                loadTable()
+                #Reset parameters
+                LOSECOUNT = 0
+                HITCOUNT = 0
+                GAMECOUNT = 1
+                STARTTIME = time.time()
+
+    #Return move to javascript
     if (move == 1):
         return "right"
     elif (move == 2):

@@ -8,7 +8,7 @@ class Config(object):
     WRITECOUNT = 1050
 
 class TestingConfig(Config):
-    DEBUG = True
+    DEBUG = False
     TESTING = True
     GETAVERAGES = False
     GETRESULTS = True
@@ -16,6 +16,7 @@ class TestingConfig(Config):
     RESULTSFILE = 'logs/results'
     TABLEFILE = 'tables/current/small_table_test'
     TABLEDIR = 'tables/test'
+    TABLEPATH = 'tables/small_state2'
     PERIOD = 50000
 
 class DevConfig(Config):
