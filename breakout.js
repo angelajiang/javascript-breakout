@@ -68,15 +68,6 @@ Breakout = {
             { key:  Game.KEY.DOWN,                     state: 'menu', action: function() { this.prevLevel();                } }
         ],
 
-        sounds: {
-            brick:    '/sound/breakout/brick.mp3',
-            paddle:   '/sound/breakout/paddle.mp3',
-            go:       '/sound/breakout/go.mp3',
-            levelup:  '/sound/breakout/levelup.mp3',
-            loselife: '/sound/breakout/loselife.mp3',
-            gameover: '/sound/breakout/gameover.mp3'
-        }
-
     },
 
     //-----------------------------------------------------------------------------
@@ -88,15 +79,13 @@ Breakout = {
         this.height  = runner.height;
         this.storage = runner.storage();
         this.color   = cfg.color;
-        this.sound   = (this.storage.sound == "true");
         this.court   = Object.construct(Breakout.Court,  this, cfg.court);
         this.paddle  = Object.construct(Breakout.Paddle, this, cfg.paddle);
         this.ball    = Object.construct(Breakout.Ball,   this, cfg.ball);
         this.score   = Object.construct(Breakout.Score,  this, cfg.score);
-        var init_bot = init_bot || 'long_learned';
+        var init_bot = Breakout.init_botname;
         
         this.bot = Object.construct(Breakout.bot[init_bot], this, cfg.bot);
-        Game.loadSounds({sounds: cfg.sounds});
     },
 
     onstartup: function() { // the event that fires the initial state transition occurs when Game.Runner constructs our StateMachine
@@ -107,15 +96,10 @@ Breakout = {
     addEvents: function() {
         Game.addEvent('prev',  'click',  this.prevLevel.bind(this, false));
         Game.addEvent('next',  'click',  this.nextLevel.bind(this, false));
-        Game.addEvent('sound', 'change', this.toggleSound.bind(this, false));
 
         Game.addEvent('instructions',     'touchstart', this.play.bind(this));
         Game.addEvent(this.runner.canvas, 'touchmove',  this.ontouchmove.bind(this));
         Game.addEvent(document.body,      'touchmove',  function(event) { event.preventDefault(); }); // prevent ipad bouncing up and down when finger scrolled
-    },
-
-    toggleSound: function() {
-        this.storage.sound = this.sound = !this.sound;
     },
 
     update: function(dt) {
@@ -154,6 +138,11 @@ Breakout = {
     },
 
     reset: function(botName) {
+        this.score.paddlehit = 0;
+        this.score.death = 0;
+        this.score.brickhit = 0;
+        this.score.winning = 0;
+	this.score.highscore = 0;
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.paddle.reset();
 	this.bot = Object.construct(Breakout.bot[botName], this, this.cfg.bot);
@@ -181,6 +170,7 @@ Breakout = {
     loseBall: function() {
 
         if (this.score.loseLife()){
+            this.score.save();
             this.score.reset();
             //this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
             this.paddle.stopMovingLeft();
@@ -190,27 +180,28 @@ Breakout = {
         else {
             this.ball.reset({launch: true});
         }
-
+        this.score.death++;
+        this.score.paddlehit = 0;
+        this.score.brickhit = 0;
         this.bot.loseBall();
     },
 
     winLevel: function() {
-        this.playSound('levelup');
         this.score.gainLife();
         this.resetLevel(Math.round(Math.random()*Breakout.Levels.length));
         this.ball.reset({launch: true});
         this.paddle.stopMovingLeft();
         this.paddle.stopMovingRight();
-
-        console.log("winLevel");
+        this.score.winning++;
+        // console.log("winLevel");
         this.bot.winLevel();
 
     },
 
     hitBrick: function(brick) {
-        this.playSound('brick');
         this.court.remove(brick);
         this.score.increase(brick.score);
+        this.score.brickhit++;
         this.ball.speed += 10 * (1 - (this.ball.speed / this.ball.maxspeed)); // decay curve - speed increases less the faster the ball is (otherwise game becomes impossible)
         if (this.court.empty())
             this.winLevel();
@@ -243,13 +234,6 @@ Breakout = {
         $('prev').toggleClassName('disabled', !this.canPrevLevel());
         $('next').toggleClassName('disabled', !this.canNextLevel());
         $('level').update(this.level + 1);
-        $('sound').checked = this.sound;
-    },
-
-    playSound: function(id) {
-        if (soundManager && this.sound) {
-            soundManager.play(id);
-        }
     },
 
     ontouchmove: function(ev) {
@@ -265,6 +249,10 @@ Breakout = {
         initialize: function(game, cfg) {
             this.game = game;
             this.cfg  = cfg;
+            this.paddlehit = 0;
+            this.death = 0;
+            this.brickhit = 0;
+            this.winning = 0;
             this.load();
             this.reset();
         },
@@ -327,7 +315,7 @@ Breakout = {
             ctx.font      = this.highfont;
             width         = ctx.measureText(text).width;
             ctx.fillText(text, this.width - width, this.height/2);
-
+            
             paddle = {
                 game: this.game,
                 w:    this.game.court.chunk * 1.5,
@@ -393,7 +381,7 @@ Breakout = {
 
             this.wall = {}
             this.wall.size  = this.chunk;
-            console.log("console size" + this.chunk);
+            // console.log("console size" + this.chunk);
             this.wall.top   = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.width + this.wall.size*2, h: this.wall.size*2               });
             this.wall.left  = Game.Math.bound({x: this.left - this.wall.size, y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
             this.wall.right = Game.Math.bound({x: this.right,                 y: this.top - this.wall.size*2, w: this.wall.size,                h: this.wall.size*2 + this.height });
@@ -594,6 +582,7 @@ Breakout = {
                 if ((closest.item == this.game.paddle) && (closest.point.d == 'top')) {
                     p2.dx = this.speed * (closest.point.x - (this.game.paddle.left + this.game.paddle.w/2)) / (this.game.paddle.w/2);
                     this.game.bot.hit();
+                    this.game.score.paddlehit++;
                 }
 
                 this.setpos(closest.point.x, closest.point.y);

@@ -1,4 +1,5 @@
 import flask
+import time
 import os
 import numpy as np
 import cPickle as pickle
@@ -24,14 +25,17 @@ except:
 TESTING = app.testing
 CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
+SAMPLESIZE = 30
 UPDATECOUNT = 0
 WRITECOUNT = app.config['WRITECOUNT']
 PERIOD = app.config['PERIOD']
 HITCOUNT=0
+LOSECOUNT=0
+WINCOUNT=0
 GAMECOUNT=1
+STARTTIME=time.time()
 #Tweakable parameters
 #table
-AVERAGESFILE = app.config['AVERAGESFILE']
 TABLEFILE = app.config['TABLEFILE']
 TABLEDIR = app.config['TABLEDIR']
 NUMACTIONS = 3
@@ -211,6 +215,7 @@ def send_file(filename):
 
 @app.route('/get_move', methods=['POST'])
 def get_move():
+    #Algorithm globals
     global QTABLE
     global CURSTATE
     global LASTSTATE
@@ -218,14 +223,18 @@ def get_move():
     global UP
     global UPLEFT
     global UPRIGHT
+    #Results
+    global TESTING
+    global TABLEDIR
+    global LOSECOUNT
+    global WINCOUNT
+    global STARTTIME
     global UPDATECOUNT
     global PERIOD
     global WRITECOUNT
     global HITCOUNT
     global GAMECOUNT
-    global AVERAGESFILE
-    global TESTING
-    global TABLEDIR
+    global SAMPLESIZE
 
     #Get current state
     LASTSTATE = CURSTATE.copy()
@@ -248,27 +257,46 @@ def get_move():
         reward = BADREWARD
         print 'LOSE!!!!\n'
         GAMECOUNT+=1
+        LOSECOUNT+=1
     elif (message == 'win'):
         reward = WINREWARD
+        GAMECOUNT+=1
+        WINCOUNT+=1
     elif (message == 'move'):
         reward = 0
-    stateMaxQ = maxQ(CURSTATE)
-    updateQ(LASTSTATE, stateMaxQ, reward);
 
-    #Periodically, write to new table
-    #print UPDATECOUNT
-    if UPDATECOUNT > PERIOD:
-        UPDATECOUNT = 0
-        filename = TABLEDIR + '/' + str(WRITECOUNT)
-        serialize(filename)
-        WRITECOUNT+=1
-        avgHits = float(HITCOUNT/GAMECOUNT)
-        HITCOUNT = 0
-        GAMECOUNT = 1
-        f = open(AVERAGESFILE, "a")
-        s = str(WRITECOUNT*PERIOD) + ' ' + str(avgHits) + '\n'
-        f.write(s)
-        f.close()
+    if (not TESTING):
+        #Only update if learning or debugging
+        stateMaxQ = maxQ(CURSTATE)
+        updateQ(LASTSTATE, stateMaxQ, reward);
+
+        #Periodically, write to new table
+        if UPDATECOUNT > PERIOD:
+            UPDATECOUNT = 0
+            filename = TABLEDIR + '/' + str(WRITECOUNT)
+            serialize(filename)
+            WRITECOUNT+=1
+
+    if (GAMECOUNT == SAMPLESIZE and TESTING):
+        print 'In testing'
+        if app.config['GETAVERAGES']:
+            avgHits = float(HITCOUNT/GAMECOUNT)
+            averagesfile = app.config['AVERAGESFILE']
+            f = open(averagesfile, "a")
+            s = str(WRITECOUNT*PERIOD) + ' ' + str(avgHits) + '\n'
+            f.write(s)
+            f.close()
+        if app.config['GETRESULTS']:
+            elapsedtime = round(time.time() - STARTTIME, 2)
+            resultsfile = app.config['RESULTSFILE']
+            f = open(resultsfile, "a")
+            s = str(TABLEFILE)+' '+str(HITCOUNT)+' '+str(LOSECOUNT)+' '+str(WINCOUNT)+' '+str(elapsedtime)+'\n'
+            f.write(s)
+            f.close()
+            LOSECOUNT = 0
+            HITCOUNT = 0
+            GAMECOUNT = 1
+            STARTTIME = time.time()
 
     #Get move for current state
     if (TESTING):

@@ -51,8 +51,8 @@ jQuery(document).ready(jQuery(function($) {
                 else if (move == 'left'){
                     gameObj.paddle.stopMovingRight();
                     gameObj.paddle.moveLeft();
-                }else{
-                    console.log("ballY: " + ballY + " ballV: " + ballV);
+                } else {
+                    // console.log("ballY: " + ballY + " ballV: " + ballV);
                 }
             })
         },

@@ -9,8 +9,8 @@
  
 <body> 
 
-  Speed:<input type="range" id="slidernumber" min="1" max="100" step=1 value=30><br/>
-  Draw Frame:<input type="range" id="frame_rate" min="1" step=1 value=1><br/>
+  Game Speed:<input type="range" id="slidernumber" min="1" max="100" step=1 value=30><br/>
+  Frame Rate:<input type="range" id="frame_rate" min="1" step=1 value=1><br/>
 
   Bot:<br/>
        <input type="radio" class="botname" name="botname" value="control">
@@ -37,10 +37,6 @@
       <img id="prev" class="disabled" src="images/down.png" title="previous level"> 
       <span id="label">level:</span><span id="level"></span> 
     </div> 
-    <div id="controls">
-      <input id='sound' type='checkbox' />
-      <label for='sound'>sound</label>
-    </div>
     <div id="instructions" style='display:none;'>
       <div class='keyboard'>
         <b>space</b> to start the simulation<br>
@@ -67,12 +63,12 @@
   <script type = "text/javascript" src="bot.js"></script>
   <script type = "text/javascript" src="change-bot.js"></script>
   <script>
-    var init_bot;
     var game;
-    
     Game.ready(function() {
+      Breakout.init_botname = jQuery('input:radio[name=botname]:checked').val();
       game = Game.start('canvas', Breakout);
     });
+    
   </script>
 
 </body> 

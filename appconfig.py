@@ -8,8 +8,12 @@ class Config(object):
     WRITECOUNT = 1050
 
 class TestingConfig(Config):
+    DEBUG = True
     TESTING = True
+    GETAVERAGES = False
+    GETRESULTS = True
     AVERAGESFILE = 'logs/average_hits_test'
+    RESULTSFILE = 'logs/results'
     TABLEFILE = 'tables/current/small_table_test'
     TABLEDIR = 'tables/test'
     PERIOD = 50000

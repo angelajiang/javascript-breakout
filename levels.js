@@ -335,7 +335,6 @@ function makeid()
         if(Math.random() > .8 && space < 5){
             space++;
             text2 += " ";
-	    console.log(i);
         }
         else{
             text2 += text.charAt(i-space);
