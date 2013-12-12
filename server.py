@@ -27,7 +27,7 @@ except: app.config.from_object(appconfig.Config) # print os.environ['APPMODE']
 TESTING = app.testing
 CURSTATE = dict(paddleX=1, ballX=1, ballV=1, ballY=1, move=2)
 LASTSTATE = dict()
-SAMPLESIZE = 30
+SAMPLESIZE = 100
 UPDATECOUNT = 0
 WRITECOUNT = app.config['WRITECOUNT']
 PERIOD = app.config['PERIOD']
@@ -62,6 +62,7 @@ WINREWARD = 10
 
 #Get tables from directory to test
 if (TESTING):
+    'IN TESTING'
     if app.config['GETRESULTS']: 
         path = app.config['TABLEPATH']
         TABLES = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
@@ -320,6 +321,7 @@ def get_move():
             tablenumber = int((re.findall('\d+', tablename))[0])
             movecount = PERIOD*tablenumber
             s = str(movecount)+' '+str(HITCOUNT/float(SAMPLESIZE))+' '+str(LOSECOUNT/float(SAMPLESIZE))+' '+str(WINCOUNT/float(SAMPLESIZE))+' '+str(elapsedtime/SAMPLESIZE)+'\n'
+            print s
             f.write(s)
             f.close()
 
@@ -333,6 +335,7 @@ def get_move():
                 TABLEFILE = os.path.join(path, TABLES[TABLEINDEX])
                 loadTable()
                 #Reset parameters
+                WINCOUNT = 0
                 LOSECOUNT = 0
                 HITCOUNT = 0
                 GAMECOUNT = 1
@@ -425,4 +428,4 @@ def disp(obj):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    app.run('127.0.0.1',5000)
+    app.run('127.0.0.1',5001)
